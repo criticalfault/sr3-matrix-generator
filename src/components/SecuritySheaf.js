@@ -20,6 +20,8 @@ const SecuritySheaf = (props) => {
     const [LethalSystem, setLethalSystem]= useState(false);
     const [EventList, setEventList] = useState([]);
     const [PayDataList, setPayDataList] = useState([]);
+    const [ICOptions, setICOptions] = useState(false);
+
     var EventListTemp = [];
     
     const ICTypes = {
@@ -36,15 +38,7 @@ const SecuritySheaf = (props) => {
         "Psychotropic Black IC":"",
         "Lethal Black IC":"",
         "Non-Lethal Black IC":"",
-        "Construct":"",
-        "Pavlov White":"Pavlov IC is similar to standard data bomb IC, except that it does not crash when detonated and remains armed. Pavlov IC follows all the same rules as data bombs with the following exceptions. First, Pavlov IC only inflicts (rating)M damage against an icon that accesses the file or device. Second, Pavlov IC does not crash when it detonates—it remains armed and ready to explode again should the file or remote device be accessed again. Third, Pavlov IC creates a threshold equal to half its rating (round down); if the number of successes achieved on the System Test to access the file or device do not exceed this threshold, then the operation fails.",
-        "Data Bomb":"A data bomb is a form of reactive IC that is attached to a file or remote slavedevice icon. The armed data bomb remains in place until another icon accesses the file or device, at which point the bomb “explodes” and damages the intruder. Unlike other IC, data bombs are not triggered by security tallies; they attack any user icon that accesses the bomb-protected icon. (See Triggering Data Bombs, p. 104.)\n\n Only one data bomb may be attached to a particular file or remote device. Data bombs may be attached to icons that are also protected by scramble IC.\n\n A data bomb can be detected by performing a successful Analyze Icon operation against the bomb-protected icon.",
-        "Trace":"Trace IC is a hybrid of white and gray IC programs designed to lock in on an intruder's datatrail and trace it back to its physical origin. Trace functions in a manner similar to the track utility (p. 221, SR3). Trace IC works in two distinct stages: the hunt cycle and the location cycle. During the hunt cycle, trace IC tries to get a fix on the intruder's datatrail by “attacking” him in cybercombat. If the intruder does not evade the attack, the trace IC begins its location cycle to locate the intruder's jackpoint.",
-        "Crashworms":"Crashworms seek to undermine the integrity of utilities, causing them to crash or suffer from induced errors. Whenever a utility is activated on a cyberterminal infected with crashworms, make a Worm Rating Test against the rating of the utility. If the utility has the crashguard option (see p. 83), add the crashguard rating as a target number modifier. If successful, the utility suffers errors and must roll on the Glitch Table (see p. 82).",
-        "Deathworms":"A deathworm infection impedes the cyberterminal's functioning from within. All tests made by the persona, including Attack and Resistance Tests made during cybercombat, suffer a target number modifier equal to the deathworm rating ÷ 2 (round down).",
-        "Dataworm":"Dataworms reside on a cyberterminal and carefully log everything the persona does: the jackpoints it uses, the systems it logs onto, the accounts and passcodes it uses, the files it accesses the utilities it uses (including ratings and options) and so on. The dataworm secretly accumulates all of this data in a hidden file on the cyberterminal and seeks to transmit it to a predetermined destination on a periodic basis. Each time a dataworm-infected cyberterminal logs on to a grid, roll 1D6. On a result of 1, the dataworm tries to send a report chock-full of incriminating evidence back to its owner.\n\n At the same time, make a Sensor (4 + Worm Rating) Test for the cyberterminal's user. If the test fails, the data payload is sent away without being discovered. If the test succeeds, the user notices the dataworm report and may engage it in cybercombat to destroy it before it gets away.\n\n In cybercombat, dataworm reports act as standard icons with rating +3D6 Initiative and an effective Evasion rating equal to the worm rating. They possess no offensive capabilities, but will maneuver to evade detection (see Cybercombat, p. 224, SR3). If the dataworm report has evaded the user at the end of any Combat Turn, it escapes. Dataworm reports are always considered to be illegitimate icons for purposes of cybercombat. The effects of dataworm reports depend on the events in the adventure. Depending on the information logged and who receives it, the user may find himself targeted for arrest or assassination, his Matrix haunts under surveillance or raided, and/or his associates killed or chased underground.",
-        "Tapeworm":"Tapeworms erase files downloaded onto the cyberterminal. Whenever the user downloads a file, make a Worm Rating (MPCP) Test as soon as the download is complete. If successful, the tapeworm corrupts the information and renders it irretrievable.",
-        "Ringworm":"Unlike their counterparts, ringworms are relatively benign; they are primarily used as a prankster tool. Ringworms are programmed to alter the coding of a persona's icon to change its appearance. These changes can be minor (perhaps causing the icon to flicker or buzz with static) or drastic (changing an imposing samurai warrior icon to a fluffy pink kitty). When a ringworm invades a cyberterminal, make a Worm Rating (Icon Rating) Test. If successful, the ringworm alters the icon as it has been programmed; use successes to determine the extent of these changes."
+        "Construct":""
     };
 
     const ServerEventTypes= {
@@ -277,9 +271,9 @@ const SecuritySheaf = (props) => {
                 }
 
                 if(Defenses === ''){
-                    List.push({"size":MPSize, "defense":'', "description":ICTypes[Defenses] });
+                    List.push({"size":MPSize, "protected":false, "defType":"", "defRating":0,  "description":"" });
                 }else{
-                    List.push({"size":MPSize, "defense":`(${Defenses.type} - ${Defenses.rating})`, "description":ICTypes[Defenses] });
+                    List.push({"size":MPSize, "protected":true, "defType":Defenses.type, "defRating":Defenses.rating, "description":ICTypes[Defenses] });
                 }
                 
             }
@@ -486,6 +480,10 @@ const SecuritySheaf = (props) => {
         setLethalSystem(event.target.checked);
     }
 
+    const onChangeICOptions = (event) =>{
+        setICOptions(event.target.checked);
+    }
+
     return (
     <Container id='SheafContainer'>
         <Row>
@@ -496,41 +494,46 @@ const SecuritySheaf = (props) => {
                 <div className='align-left'>
                     <InputGroup onChange={onChangeSheafCode}>
                         <InputGroup.Text>System Color</InputGroup.Text> 
-                        <InputGroup.Radio aria-label="Blue"   value='blue'    name="sheafCode" checked/>
+                        <InputGroup.Radio aria-label="Blue" value='blue' name="sheafCode"/>
                         <InputGroup.Text>Blue</InputGroup.Text>
-                        <InputGroup.Radio aria-label="Green"  value='green'   name="sheafCode"/>
+                        <InputGroup.Radio aria-label="Green"  value='green' name="sheafCode"/>
                         <InputGroup.Text>Green</InputGroup.Text>
-                        <InputGroup.Radio aria-label="Orange" value="orange"  name="sheafCode"/>
+                        <InputGroup.Radio aria-label="Orange" value="orange" name="sheafCode"/>
                         <InputGroup.Text>Orange</InputGroup.Text>
-                        <InputGroup.Radio aria-label="Red"    value='red'     name="sheafCode"/>
+                        <InputGroup.Radio aria-label="Red" value='red' name="sheafCode"/>
                         <InputGroup.Text>Red</InputGroup.Text>
                     </InputGroup>
                     <InputGroup onChange={onChangeSheafDifficulty}>
                         <InputGroup.Text>System Difficulty</InputGroup.Text>
-                        <InputGroup.Radio aria-label="easy"       value='easy'    name="sheafDifficulty" checked/>
+                        <InputGroup.Radio aria-label="easy" value='easy' name="sheafDifficulty"/>
                         <InputGroup.Text>Easy</InputGroup.Text>
-                        <InputGroup.Radio aria-label="average"    value='average' name="sheafDifficulty"/>
+                        <InputGroup.Radio aria-label="average" value='average' name="sheafDifficulty"/>
                         <InputGroup.Text>Average</InputGroup.Text>
-                        <InputGroup.Radio aria-label="hard"       value="hard"    name="sheafDifficulty"/>
+                        <InputGroup.Radio aria-label="hard" value="hard" name="sheafDifficulty"/>
                         <InputGroup.Text>Hard</InputGroup.Text>
                     </InputGroup>
                     <InputGroup onChange={onChangeNastySurprises}>
                         <InputGroup.Text>Nasty Surprises?</InputGroup.Text>
-                        <InputGroup.Checkbox name='NastySurprises' value={NastySurprises} aria-label="Checkbox for following text input" />
+                        <InputGroup.Checkbox name='NastySurprises' value={NastySurprises} aria-label="Nasty Surprises?" />
                     </InputGroup>
                     <InputGroup onChange={onChangePaydata}>
                         <InputGroup.Text>Paydata?</InputGroup.Text>
-                        <InputGroup.Checkbox name='Paydata' value={PaydataCheck} aria-label="Checkbox for following text input" />
+                        <InputGroup.Checkbox name='Paydata' value={PaydataCheck} aria-label="Paydata?" />
                     </InputGroup>
                     <InputGroup onChange={onChangeLethalSystem}>
                         <InputGroup.Text>Lethal System?</InputGroup.Text>
-                        <InputGroup.Checkbox name='Paydata' value={LethalSystem} aria-label="Checkbox for following text input" />
+                        <InputGroup.Checkbox name='LethalSystem' value={LethalSystem} aria-label="Lethal System?" />
+                    </InputGroup>
+                    <InputGroup onChange={onChangeICOptions}>
+                        <InputGroup.Text>IC with Extra?</InputGroup.Text>
+                        <InputGroup.Checkbox name='ICOptions' value={ICOptions} aria-label="IC with Extra?" />
                     </InputGroup>
                     <Button onClick={GenerateSheaf}>Generate Host</Button>
                 </div>
             </Col>
             <Col>
                 <Row>
+                    <h3>Step / Intrustion Counter Measure</h3>
                 {
                     EventList.map((item,index) => {   
                         if(item.type === 'IC'){
@@ -542,7 +545,8 @@ const SecuritySheaf = (props) => {
                 }
                 <hr></hr>
                 {
-                    PayDataList.map((item,index) => <PayData size={item.size} defense={item.defense} /> )
+                    //"size":MPSize, "protected":false, "defType":"", "defRating":0,  "description":"" 
+                    PayDataList.map((item,index) => <PayData size={item.size} protected={item.protected} defType={item.defType} defRating={item.defRating}  description={item.description} /> )
                 }
                 </Row>
             </Col>
