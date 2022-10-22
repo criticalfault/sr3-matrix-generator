@@ -1,6 +1,6 @@
 import './App.css';
 import Container from 'react-bootstrap/Container';
-import SecuritySheaf from './components/UI/SecuritySheaf';
+import SecuritySheaf from './components/SecuritySheaf';
 
 function App() {
   return (
