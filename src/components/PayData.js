@@ -9,8 +9,6 @@ const [show, setShow] = useState(false);
 const handleClose = () => setShow(false);
 const handleShow = () => setShow(true);
 
-
-
 const DefenseTypes = {
     "Pavlov IC":"Pavlov IC is similar to standard data bomb IC, except that it does not crash when detonated and remains armed. Pavlov IC follows all the same rules as data bombs with the following exceptions. First, Pavlov IC only inflicts (rating)M damage against an icon that accesses the file or device. Second, Pavlov IC does not crash when it detonates—it remains armed and ready to explode again should the file or remote device be accessed again. Third, Pavlov IC creates a threshold equal to half its rating (round down); if the number of successes achieved on the System Test to access the file or device do not exceed this threshold, then the operation fails.",
     "Data Bomb":"A data bomb is a form of reactive IC that is attached to a file or remote slavedevice icon. The armed data bomb remains in place until another icon accesses the file or device, at which point the bomb “explodes” and damages the intruder. Unlike other IC, data bombs are not triggered by security tallies; they attack any user icon that accesses the bomb-protected icon. (See Triggering Data Bombs, p. 104.)\n\n Only one data bomb may be attached to a particular file or remote device. Data bombs may be attached to icons that are also protected by scramble IC.\n\n A data bomb can be detected by performing a successful Analyze Icon operation against the bomb-protected icon.",
@@ -24,7 +22,6 @@ const DefenseTypes = {
 }
 
 const defenseDesc = () =>{
-    //size={item.size} protected={item.protected} defType={item.defType} defRating={item.defRating}  description={item.description}
     if(props.protected){
         return (<div><strong>Defense: </strong>{DefenseTypes[props.defType]}</div>)
     }else{
@@ -51,8 +48,21 @@ const exampleString = () =>{
                 "The secret schematics for a cyberware.",
                 "The secret schematics for a drone.",
                 "The secret schematics for a gun.",
+                "The secret schematics for nanotechnology.",
                 "The secret formula for a program.",
                 "The secret formula for a recipe.",
+                "Incriminating Banking information",
+                "Unreleased music track",
+                "Source code for popular video game",
+                "Crypto coin wallet information",
+                "Private LTG address for someone private",
+                "Television script",
+                "Unreleased Chapter for a popular series",
+                "Digitally signed iconography",
+                "Unrelease recipe for a brand of sweet",
+                "List of popular used passwords",
+                "Incriminating photos from a security camera",
+                "Current location of a very private individuals vehicle",
                 "Accounting information that shows who is secretly being paid by who.",
                 "Lists of members of an organization that may have enemies seeking to take out those members.",
                 "Similarly to the above item, lists of benefactors to a cause that might have enemies.",
