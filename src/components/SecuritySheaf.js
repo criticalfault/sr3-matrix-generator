@@ -6,6 +6,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
+import Form from 'react-bootstrap/Form';
 import IC from './IC.js';
 import ServerEvent from './ServerEvent';
 import PayData from './PayData.js';
@@ -15,6 +16,7 @@ const SecuritySheaf = (props) => {
     const [sheafDifficulty, setSheafDifficulty] = useState('easy');
     const [PaydataCheck, setPaydataCheck] = useState(false);
     const [NastySurprises, setNastySurprises] = useState(false);
+    const [NastySurprisesOutput, setNastySurprisesOutput] = useState('');
     const [SecurityValue, setSecurityValue] = useState('');
     const [SecuritySheafOutput, setSecuritySheafOutput] = useState('');
     const [LethalSystem, setLethalSystem]= useState(false);
@@ -106,8 +108,9 @@ const SecuritySheaf = (props) => {
     const ReactiveWhite = (ICStep) => {
         var IC = ["Probe", "Probe", "Trace", "Trace", "Trace", "Tar Baby"]
         var ICName = IC[Dice(1,6,-1)];
-        var ICExtra = "-" + ICRating() + ReactiveOptions()
-        EventListTemp.push({"type":"IC", "ICStep":ICStep, "ICName":ICName, "ICExtra":ICExtra, "ICDescription":ICTypes[ICName]});
+        var ICExtra = "-" + ICRating();
+        var ICOptions = ReactiveOptions();
+        EventListTemp.push({"type":"IC", "ICStep":ICStep, "ICName":ICName, "ICExtra":ICExtra, "ICOptions":ICOptions, "ICDescription":ICTypes[ICName]});
         return ICName + ICExtra;
     }
     
@@ -119,8 +122,9 @@ const SecuritySheaf = (props) => {
         if (n <= 3)
             I += Crippler();
         
-        var ICExtra = "-" + ICRating() + ProactiveOptions();
-        EventListTemp.push({"type":"IC", "ICStep":ICStep, "ICName":I, "ICExtra":ICExtra, "ICDescription":ICTypes[ICName]});
+        var ICExtra = "-" + ICRating();
+        var ICOptions =  ProactiveOptions();
+        EventListTemp.push({"type":"IC", "ICStep":ICStep, "ICName":I, "ICExtra":ICExtra, "ICOptions":ICOptions, "ICDescription":ICTypes[ICName]});
         return I + ICExtra;
     }
     
@@ -133,9 +137,9 @@ const SecuritySheaf = (props) => {
         if ((n >= 2)&&(n <= 4)){
             I += TrapIC();
         }
-
         var options = ReactiveOptions();
-        EventListTemp.push({"type":"IC", "ICStep":ICStep, "ICName":I, "ICExtra":ICExtra+options, "ICDescription":ICTypes[ICName]});
+        var ICOptions = ReactiveOptions();
+        EventListTemp.push({"type":"IC", "ICStep":ICStep, "ICName":I, "ICExtra":ICExtra, "ICOptions":ICOptions, "ICDescription":ICTypes[ICName]});
         return I + ICExtra + options;
     }
     
@@ -144,11 +148,13 @@ const SecuritySheaf = (props) => {
         var n = Dice(2,6,-2)
         var I = IC[n]
         var ICName = I;
-        if (n <= 3)
+        if (n <= 3){
             I += Ripper()
+        }
         var ICExtra = "-" + ICRating();
         var options = ProactiveOptions();
-        EventListTemp.push({"type":"IC", "ICStep":ICStep, "ICName":I, "ICExtra":ICExtra+options, "ICDescription":ICTypes[ICName]});
+        var ICOptions = ProactiveOptions();
+        EventListTemp.push({"type":"IC", "ICStep":ICStep, "ICName":I, "ICExtra":ICExtra, "ICOptions":ICOptions, "ICDescription":ICTypes[ICName]});
         return I + ICExtra + options
     }
     
@@ -174,16 +180,17 @@ const SecuritySheaf = (props) => {
     }
     
     const TrapIC = () => {
-        return "";
-        // var Trap = ["Data Bomb", "Blaster", "Blaster", "Blaster", "Killer", "Killer", "Killer", "Sparky", "Sparky", "Sparky", "Black"]
-        // var n = Dice(2,6,-2)
-        // var I = Trap[n] + "-" + ICRating()
-        // if ((n === 0)&&(Dice(1,6,0) >= 5))
-        //     I = "Pavlov " + I
-        // else if (n === 12)
-        //     I = Black()
-    
-        // return " with trap " + I
+        if(ICOptions){
+            var Trap = ["Data Bomb", "Blaster", "Blaster", "Blaster", "Killer", "Killer", "Killer", "Sparky", "Sparky", "Sparky", "Black"]
+            var n = Dice(2,6,-2)
+            var I = Trap[n] + "-" + ICRating()
+            if ((n === 0)&&(Dice(1,6,0) >= 5))
+                I = "Pavlov " + I
+            else if (n === 12)
+                I = Black()
+        
+            return " with trap " + I
+        }
     }
     
     const Crippler = () => {
@@ -196,49 +203,54 @@ const SecuritySheaf = (props) => {
     }
     
     const ReactiveOptions = () => {
-        return "";
-        // var ICOptions = [" (Shielding)", " (Shielding)", " (Shielding)", " (Armor)", "None", "None", "Trap", " (Armor)", " (Shifting)", " (Shifting)", " (Shifting)"]
-        // var n = Dice(2,6,-2)
-        // var O = ICOptions[n]
-        // if ((n === 4)|(n === 5))
-        //     O = ""
-        // else if (n === 6)
-        //     O = TrapIC()
-    
-        // return O
+        if(ICOptions){
+            var ICOptions = ["Shielding", "Shielding", "Shielding", "Armor", false, false, "Trap", "Armor", "Shifting", "Shifting", "Shifting"]
+            var n = Dice(2,6,-2)
+            var O = ICOptions[n]
+            if ((n === 4)|(n === 5))
+                O = ""
+            else if (n === 6)
+                O = TrapIC()
+        
+            return O
+        }else{
+            return false;
+        }
     }
 
     const ProactiveOptions = () => {
-        return "";
-        // var ICOptions = ["Party Cluster", "Party Cluster", " (Expert Offense", " (Shifting)", " (Cascading)", "None", " (Armor)", " (Shielding)", " (Expert Defense", "Trap", "Roll Twice"]
-        // var n = Dice(2,6,-2)
-        // var O = ICOptions[n]
-        // if ((n === 2)|(n === 8))
-        //     O += "-" + Dice(1,3,0).toString() + ")"
-        // else if (n === 5)
-        //     O = ""
-        // else if (n === 9)
-        //     O = TrapIC()
-        // else if (n === 10) {
-        //     O = ""
-        //     for (var m = 0; m < 2; m++) {
-        //         var n2 = Dice(2,6,-2)
-        //         while (n2 === 10)
-        //             n2 = Dice(2,6,-2)
-    
-        //         var O2 = ICOptions[n2]
-        //         if ((n2 === 2)|(n2 === 8))
-        //             O2 += "-" + Dice(1,3,0).toString() + ")"
-        //         else if (n2 === 5)
-        //             O2 = ""
-        //         else if (n2 === 9)
-        //             O2 = TrapIC()
-    
-        //         O += O2
-        //     }
-        // }
+        if(ICOptions){
+            var ICOptions = ["Party Cluster", "Party Cluster", "Expert Offense", "Shifting", "Cascading", false, "Armor", "Shielding", "Expert Defense", "Trap", "Roll Twice"]
+            var n = Dice(2,6,-2)
+            var O = ICOptions[n]
+            if ((n === 2)|(n === 8))
+                O += "-" + Dice(1,3,0).toString() + ")"
+            else if (n === 5)
+                O = ""
+            else if (n === 9)
+                O = TrapIC()
+            else if (n === 10) {
+                O = ""
+                for (var m = 0; m < 2; m++) {
+                    var n2 = Dice(2,6,-2)
+                    while (n2 === 10)
+                        n2 = Dice(2,6,-2)
         
-        // return O
+                    var O2 = ICOptions[n2]
+                    if ((n2 === 2)|(n2 === 8))
+                        O2 += "-" + Dice(1,3,0).toString() + ")"
+                    else if (n2 === 5)
+                        O2 = ""
+                    else if (n2 === 9)
+                        O2 = TrapIC()
+        
+                    O += O2
+                }
+            }   
+            return O
+        }else{
+            return false;
+        }
     }
     
     const PayDataGenerate = (systemColor) => {
@@ -397,6 +409,35 @@ const SecuritySheaf = (props) => {
         if(sheafCode === "orange"){ StepModifier = 2 }
         if(sheafCode === "red")   { StepModifier = 1 }
 
+        if (NastySurprises === true) {
+            //Still need to work this in, see about how we can display this nicely when its enabled.
+            // let Surprises = ["Semi-Autonomous Knowbot", "Teleporting SAN", "Vanishing SAN", "Bouncer Host", "Data Bomb", "Scramble IC", "Security Decker(s)", "Worm", "Chokepoint", "Trap Door", "Virtual Host"]
+            // let n = Dice(2,6,-2)
+            // let S = Surprises[n]
+            // if (n === 4) {
+            //     if (Dice(1,6,0) >= 5)
+            //         S = "Pavlov " + S
+            //     if (Dice(1,6,0) <= 4)
+            //         S += " guarding a file"
+            //     else
+            //         S += " guarding a slave device"
+            // }
+            // else if (n === 5) {
+            //     Roll = Dice(1,6,0)
+            //     if (Roll <= 2)
+            //         S += " guarding Access subsystem"
+            //     else if ((Roll == 3)|(Roll == 4))
+            //         S += " guarding Files subsystem"
+            //     else if (Roll >= 5)
+            //         S += " guarding Slave subsystem"
+            // }
+            // else if (n === 7) {
+            //     S += Worm()
+            // }
+
+            setNastySurprisesOutput(S);
+        }
+
         SecuritySheafOutput += "\nStep: Event"
 
         for (let n = 0; AlertStatus < 3; n++) {
@@ -491,45 +532,75 @@ const SecuritySheaf = (props) => {
         </Row>
         <Row>
             <Col >
-                <div className='align-left'>
-                    <InputGroup onChange={onChangeSheafCode}>
-                        <InputGroup.Text>System Color</InputGroup.Text> 
-                        <InputGroup.Radio aria-label="Blue" value='blue' name="sheafCode"/>
-                        <InputGroup.Text>Blue</InputGroup.Text>
-                        <InputGroup.Radio aria-label="Green"  value='green' name="sheafCode"/>
-                        <InputGroup.Text>Green</InputGroup.Text>
-                        <InputGroup.Radio aria-label="Orange" value="orange" name="sheafCode"/>
-                        <InputGroup.Text>Orange</InputGroup.Text>
-                        <InputGroup.Radio aria-label="Red" value='red' name="sheafCode"/>
-                        <InputGroup.Text>Red</InputGroup.Text>
-                    </InputGroup>
-                    <InputGroup onChange={onChangeSheafDifficulty}>
-                        <InputGroup.Text>System Difficulty</InputGroup.Text>
-                        <InputGroup.Radio aria-label="easy" value='easy' name="sheafDifficulty"/>
-                        <InputGroup.Text>Easy</InputGroup.Text>
-                        <InputGroup.Radio aria-label="average" value='average' name="sheafDifficulty"/>
-                        <InputGroup.Text>Average</InputGroup.Text>
-                        <InputGroup.Radio aria-label="hard" value="hard" name="sheafDifficulty"/>
-                        <InputGroup.Text>Hard</InputGroup.Text>
-                    </InputGroup>
-                    <InputGroup onChange={onChangeNastySurprises}>
-                        <InputGroup.Text>Nasty Surprises?</InputGroup.Text>
-                        <InputGroup.Checkbox name='NastySurprises' value={NastySurprises} aria-label="Nasty Surprises?" />
-                    </InputGroup>
-                    <InputGroup onChange={onChangePaydata}>
-                        <InputGroup.Text>Paydata?</InputGroup.Text>
-                        <InputGroup.Checkbox name='Paydata' value={PaydataCheck} aria-label="Paydata?" />
-                    </InputGroup>
-                    <InputGroup onChange={onChangeLethalSystem}>
-                        <InputGroup.Text>Lethal System?</InputGroup.Text>
-                        <InputGroup.Checkbox name='LethalSystem' value={LethalSystem} aria-label="Lethal System?" />
-                    </InputGroup>
-                    <InputGroup onChange={onChangeICOptions}>
-                        <InputGroup.Text>IC with Extra?</InputGroup.Text>
-                        <InputGroup.Checkbox name='ICOptions' value={ICOptions} aria-label="IC with Extra?" />
-                    </InputGroup>
+                <Form className='align-left'>
+                    <div onChange={onChangeSheafCode}> 
+                        <h2>System Color</h2>
+                        <div className="form-check">
+                            <label className="form-check-label">Blue
+                                <input className="form-check-input" type="radio" aria-label="Blue" value='blue' name="sheafCode" />
+                            </label>
+                        </div>
+                        <div className="form-check">
+                            <label className="form-check-label">Green
+                                <input className="form-check-input" type="radio" value='green' name="sheafCode"/>
+                            </label>
+                        </div>
+                        <div className="form-check">
+                            <label className="form-check-label">Orange
+                                <input className="form-check-input" type="radio" aria-label="Orange" value="orange" name="sheafCode"/>
+                            </label>
+                        </div>
+                        <div className="form-check">
+                            <label className="form-check-label">Red
+                                <input className="form-check-input" type="radio" aria-label="Red" value='red' name="sheafCode"/>
+                            </label>
+                        </div>
+                    </div>
+                    <div onChange={onChangeSheafDifficulty}>
+                        <h2>System Difficulty</h2>
+                        <div className="form-check">
+                            <label className="form-check-label">Easy
+                                <input type="radio" className="form-check-input" aria-label="easy" value='easy' name="sheafDifficulty"/>
+                            </label>
+                        </div>
+                        <div className="form-check">
+                            <label className="form-check-label">Average
+                                <input type="radio" className="form-check-input" aria-label="average" value='average'name="sheafDifficulty"/>
+                            </label>
+                        </div>
+                        <div className="form-check">
+                            <label className="form-check-label">Hard
+                                <input type="radio" className="form-check-input" aria-label="hard" value="hard" name="sheafDifficulty"/>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <label className="form-check-label">
+                            <input type="checkbox" name='NastySurprises' value={NastySurprises} onChange={onChangeNastySurprises} aria-label="Nasty Surprises?"/>
+                            &nbsp;Nasty Surprises?
+                        </label>
+                    </div>
+                    <div >
+                        <label className="form-check-label">
+                            <input type="checkbox" name='Paydata' value={PaydataCheck}  onChange={onChangePaydata} aria-label="Paydata?"/>
+                            &nbsp;Paydata?
+                        </label>
+                    </div>
+                    <div >
+                        <label className="form-check-label">
+                            <input type="checkbox" name='LethalSystem' value={LethalSystem} onChange={onChangeLethalSystem} aria-label="Lethal System?"/>
+                             &nbsp;Lethal System?
+                        </label>
+                    </div>
+                    <div c>
+                        <label className="form-check-label">
+                            <input type="checkbox" name='ICOptions' value={ICOptions} onChange={onChangeICOptions} aria-label="IC with Extra?"/>
+                            &nbsp;IC with Extra?
+                        </label>
+                    </div>   
+
                     <Button onClick={GenerateSheaf}>Generate Host</Button>
-                </div>
+                </Form>
             </Col>
             <Col>
                 <Row>
@@ -537,16 +608,15 @@ const SecuritySheaf = (props) => {
                 {
                     EventList.map((item,index) => {   
                         if(item.type === 'IC'){
-                            return (<IC ICStep={item.ICStep} ICName={item.ICName+item.ICExtra} ICDescription={item.ICDescription} />)
+                            return (<IC ICStep={item.ICStep} ICName={item.ICName+item.ICExtra} ICDescription={item.ICDescription} key={index}/>)
                         }else{
-                            return (<ServerEvent ICStep={item.ICStep} EventName={item.EventName} EventDescription={ServerEventTypes[item.EventName]} />)
+                            return (<ServerEvent ICStep={item.ICStep} EventName={item.EventName} EventDescription={ServerEventTypes[item.EventName]} key={index} />)
                         }
                     })
                 }
-                <hr></hr>
+                <hr></hr>         
                 {
-                    //"size":MPSize, "protected":false, "defType":"", "defRating":0,  "description":"" 
-                    PayDataList.map((item,index) => <PayData size={item.size} protected={item.protected} defType={item.defType} defRating={item.defRating}  description={item.description} /> )
+                    PayDataList.map((item,index) => <PayData key={index} size={item.size} protected={item.protected} defType={item.defType} defRating={item.defRating}  description={item.description} /> )
                 }
                 </Row>
             </Col>
