@@ -527,17 +527,17 @@ const SecuritySheaf = (props) => {
 
     return (
     <Container id='SheafContainer'>
-        <Row>
+        <Row className='shadowbox'>
             <h1>Shadowrun Matrix Generator</h1>
         </Row>
         <Row>
-            <Col >
-                <Form className='align-left'>
+            <Col className='shadowbox'>
+                <div className='align-left'>
                     <div onChange={onChangeSheafCode}> 
                         <h2>System Color</h2>
                         <div className="form-check">
                             <label className="form-check-label">Blue
-                                <input className="form-check-input" type="radio" aria-label="Blue" value='blue' name="sheafCode" />
+                                <input className="form-check-input" type="radio" aria-label="Blue" value='blue' name="sheafCode"  />
                             </label>
                         </div>
                         <div className="form-check">
@@ -560,7 +560,7 @@ const SecuritySheaf = (props) => {
                         <h2>System Difficulty</h2>
                         <div className="form-check">
                             <label className="form-check-label">Easy
-                                <input type="radio" className="form-check-input" aria-label="easy" value='easy' name="sheafDifficulty"/>
+                                <input type="radio" className="form-check-input" aria-label="easy" value='easy' name="sheafDifficulty" />
                             </label>
                         </div>
                         <div className="form-check">
@@ -600,9 +600,9 @@ const SecuritySheaf = (props) => {
                     </div>   
 
                     <Button onClick={GenerateSheaf}>Generate Host</Button>
-                </Form>
+                </div>
             </Col>
-            <Col>
+            <Col className='shadowbox'>
                 <Row>
                     <h3>Step / Intrustion Counter Measure</h3>
                 {
