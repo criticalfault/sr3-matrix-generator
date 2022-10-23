@@ -4,7 +4,7 @@ resource "digitalocean_app" "matrix-gen" {
     region = "nyc"
     domain {
       name = "matrix.nullsheen.com"
-      type = "PRIMARY"
+      type = "ALIAS"
       zone = "nullsheen.com"
     }
 
@@ -15,7 +15,7 @@ resource "digitalocean_app" "matrix-gen" {
 
       git {
         repo_clone_url = "https://github.com/criticalfault/sr3-matrix-generator.git"
-        branch         = "main"
+        branch         = "Add-Terraform-for-domain-name"
       }
     }
   }
