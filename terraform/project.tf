@@ -3,5 +3,8 @@ resource "digitalocean_project" "nullsheen" {
   description = "nullsheen.com project"
   purpose     = "Web Application"
   environment = "Production"
-  resources   = [digitalocean_app.matrix-gen.urn]
+  resources   = [
+  digitalocean_app.matrix-gen.urn,
+  digitalocean_domain.nullsheen.urn
+  ]
 }

@@ -5,6 +5,7 @@ resource "digitalocean_app" "matrix-gen" {
     domain {
       name = "matrix.nullsheen.com"
       type = "PRIMARY"
+      zone = "nullsheen.com"
     }
 
     static_site {
