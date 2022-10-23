@@ -435,7 +435,7 @@ const SecuritySheaf = (props) => {
             //     S += Worm()
             // }
 
-            setNastySurprisesOutput(S);
+            //setNastySurprisesOutput(S);
         }
 
         SecuritySheafOutput += "\nStep: Event"
