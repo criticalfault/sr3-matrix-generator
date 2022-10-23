@@ -4,8 +4,7 @@ resource "digitalocean_app" "matrix-gen" {
     region = "nyc"
     domain {
       name = "matrix.nullsheen.com"
-      type = "ALIAS"
-      zone = "nullsheen.com"
+      type = "PRIMARY"
     }
 
     static_site {
