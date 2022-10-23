@@ -537,7 +537,7 @@ const SecuritySheaf = (props) => {
                         <h2>System Color</h2>
                         <div className="form-check">
                             <label className="form-check-label">Blue
-                                <input className="form-check-input" type="radio" aria-label="Blue" value='blue' name="sheafCode" />
+                                <input className="form-check-input" type="radio" aria-label="Blue" value='blue' name="sheafCode" defaultChecked />
                             </label>
                         </div>
                         <div className="form-check">
@@ -560,7 +560,7 @@ const SecuritySheaf = (props) => {
                         <h2>System Difficulty</h2>
                         <div className="form-check">
                             <label className="form-check-label">Easy
-                                <input type="radio" className="form-check-input" aria-label="easy" value='easy' name="sheafDifficulty"/>
+                                <input type="radio" className="form-check-input" aria-label="easy" value='easy' name="sheafDifficulty" defaultChecked/>
                             </label>
                         </div>
                         <div className="form-check">
