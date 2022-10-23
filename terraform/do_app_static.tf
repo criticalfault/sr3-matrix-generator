@@ -2,6 +2,11 @@ resource "digitalocean_app" "matrix-gen" {
   spec {
     name   = "matrix-generator"
     region = "nyc"
+    domain {
+      name = "matrix.nullsheen.com"
+      type = "PRIMARY"
+      zone = "nullsheen.com"
+    }
 
     static_site {
       name          = "matrix-generator-sr3"
