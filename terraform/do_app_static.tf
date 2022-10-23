@@ -15,7 +15,7 @@ resource "digitalocean_app" "matrix-gen" {
 
       git {
         repo_clone_url = "https://github.com/criticalfault/sr3-matrix-generator.git"
-        branch         = "Add-Terraform-for-domain-name"
+        branch         = "main"
       }
     }
   }
