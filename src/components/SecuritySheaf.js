@@ -14,6 +14,7 @@ import PayData from './PayData.js';
 const SecuritySheaf = (props) => {
     const [sheafCode, setSheafCode] = useState('blue');
     const [sheafDifficulty, setSheafDifficulty] = useState('easy');
+    const [sheafDisplay, setSheafDisplay] = useState('');
     const [PaydataCheck, setPaydataCheck] = useState(false);
     const [NastySurprises, setNastySurprises] = useState(false);
     const [NastySurprisesOutput, setNastySurprisesOutput] = useState('');
@@ -384,25 +385,50 @@ const SecuritySheaf = (props) => {
         let CurrentStep = 0
         let Event = ""
         let Roll = 0
+
+        //ACIFS
+        let AccessValue = 0;
+        let ControlValue = 0;
+        let IndexValue = 0;
+        let FilesValue = 0;
+        let SlaveValue = 0;
+        let secValue = 0;
+
         EventListTemp = [];
 
         if (sheafDifficulty === "easy") {
-            let secValue = Dice(1,3,3);
-            setSecurityValue(secValue);
-            SecuritySheafOutput += sheafCode + "-" + SecurityValue.toString() + "/" + Dice(1,3,7).toString() + "/" + Dice(1,3,7).toString() + "/" + Dice(1,3,7).toString() + "/" + Dice(1,3,7).toString() + "/" + Dice(1,3,7).toString() + "\n";
+            secValue = Dice(1,3,3);
+           
+            AccessValue     = Dice(1,3,7).toString();
+            ControlValue    = Dice(1,3,7).toString();
+            IndexValue      = Dice(1,3,7).toString();
+            FilesValue      = Dice(1,3,7).toString();
+            SlaveValue      = Dice(1,3,7).toString();
+            SecuritySheafOutput += sheafCode + "-" + secValue.toString() + "/" + Dice(1,3,7).toString() + "/" + Dice(1,3,7).toString() + "/" + Dice(1,3,7).toString() + "/" + Dice(1,3,7).toString() + "/" + Dice(1,3,7).toString() + "\n";
         }
 
         if (sheafDifficulty === "average") {
             let secValue = Dice(1,3,6);
             setSecurityValue(secValue);
-            SecuritySheafOutput += sheafCode + "-" + SecurityValue.toString() + "/" + Dice(2,3,9).toString() + "/" + Dice(2,3,9).toString() + "/" + Dice(2,3,9).toString() + "/" + Dice(2,3,9).toString() + "/" + Dice(2,3,9).toString() + "\n";
+            AccessValue     = Dice(2,3,9).toString();
+            ControlValue    = Dice(2,3,9).toString();
+            IndexValue      = Dice(2,3,9).toString();
+            FilesValue      = Dice(2,3,9).toString();
+            SlaveValue      = Dice(2,3,9).toString();
+            SecuritySheafOutput += sheafCode + "-" + secValue.toString() + "/" + Dice(2,3,9).toString() + "/" + Dice(2,3,9).toString() + "/" + Dice(2,3,9).toString() + "/" + Dice(2,3,9).toString() + "/" + Dice(2,3,9).toString() + "\n";
         }
 
         if (sheafDifficulty === "hard") {
             let secValue = Dice(2,3,6);
-            setSecurityValue(secValue)
-            SecuritySheafOutput += sheafCode + "-" + SecurityValue.toString() + "/" + Dice(1,6,12).toString() + "/" + Dice(1,6,12).toString() + "/" + Dice(1,6,12).toString() + "/" + Dice(1,6,12).toString() + "/" + Dice(1,6,12).toString() + "\n";
+            setSecurityValue(secValue);
+            AccessValue     = Dice(1,6,12).toString();
+            ControlValue    = Dice(1,6,12).toString();
+            IndexValue      = Dice(1,6,12).toString();
+            FilesValue      = Dice(1,6,12).toString();
+            SlaveValue      = Dice(1,6,12).toString();
+            SecuritySheafOutput += sheafCode + "-" + secValue.toString() + "/" + Dice(1,6,12).toString() + "/" + Dice(1,6,12).toString() + "/" + Dice(1,6,12).toString() + "/" + Dice(1,6,12).toString() + "/" + Dice(1,6,12).toString() + "\n";
         }
+        setSheafDisplay(sheafCode.toUpperCase() + "-" + secValue.toString() + '  (ACIFS) ' +AccessValue+ "/" +ControlValue+ "/" +IndexValue+ "/" +FilesValue+ "/" +SlaveValue  );
         
         if(sheafCode === "blue")  { StepModifier = 4 }
         if(sheafCode === "green") { StepModifier = 3 }
@@ -605,6 +631,8 @@ const SecuritySheaf = (props) => {
             <Col>
                 <Row>
                     <h3>Step / Intrustion Counter Measure</h3>
+                    <h4>{sheafDisplay + " " }</h4>
+                    <hr></hr>
                 {
                     EventList.map((item,index) => {   
                         if(item.type === 'IC'){
