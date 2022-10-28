@@ -408,8 +408,7 @@ const SecuritySheaf = (props) => {
         }
 
         if (sheafDifficulty === "average") {
-            let secValue = Dice(1,3,6);
-            setSecurityValue(secValue);
+            secValue = Dice(1,3,6);
             AccessValue     = Dice(2,3,9).toString();
             ControlValue    = Dice(2,3,9).toString();
             IndexValue      = Dice(2,3,9).toString();
@@ -419,8 +418,7 @@ const SecuritySheaf = (props) => {
         }
 
         if (sheafDifficulty === "hard") {
-            let secValue = Dice(2,3,6);
-            setSecurityValue(secValue);
+            secValue = Dice(2,3,6);
             AccessValue     = Dice(1,6,12).toString();
             ControlValue    = Dice(1,6,12).toString();
             IndexValue      = Dice(1,6,12).toString();
