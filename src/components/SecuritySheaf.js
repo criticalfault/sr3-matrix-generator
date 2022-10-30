@@ -24,7 +24,12 @@ const SecuritySheaf = (props) => {
     const [EventList, setEventList] = useState([]);
     const [PayDataList, setPayDataList] = useState([]);
     const [ICHaveOptions, setICHaveOptions] = useState(false);
-
+    const CombatStats = {
+        "blue":  { "Legitimate":3, "Intruding":6, "ICDamage":"Moderate", "DumpShock":"Light",    "ICInit":"1d6+Rating", "ConstructHackingPool":0, "CascadeIncrease":"1"         },
+        "green": { "Legitimate":4, "Intruding":5, "ICDamage":"Moderate", "DumpShock":"Moderate", "ICInit":"2d6+Rating", "ConstructHackingPool":1, "CascadeIncrease":"25% or 2"  },
+        "orange":{ "Legitimate":5, "Intruding":4, "ICDamage":"Serious",  "DumpShock":"Serious",  "ICInit":"3d6+Rating", "ConstructHackingPool":2, "CascadeIncrease":"50% or 3"  },
+        "red":   { "Legitimate":6, "Intruding":3, "ICDamage":"Serious",  "DumpShock":"Deadly",   "ICInit":"4d6+Rating", "ConstructHackingPool":3, "CascadeIncrease":"100% or 4" }
+    }
     var EventListTemp = [];
 
 
@@ -186,7 +191,6 @@ const SecuritySheaf = (props) => {
     }
     
     const Crippler = () => {
-        //let Target = ["Acid [Bod]", "Acid [Bod]", "Binder [Evasion]", "Jammer [Sensor]", "Jammer [Sensor]", "Marker [Masking]"]
         let Target = ["Acid", "Acid", "Binder", "Jammer", "Jammer", "Marker"]
         return Target[Dice(1,6,-1)];
     }
@@ -216,7 +220,7 @@ const SecuritySheaf = (props) => {
 
             let O = ICOptions[n]
             if ((n === 2)|(n === 8))
-                O += "-" + Dice(1,3,0).toString() + ")"
+                O += "-" + Dice(1,3,0).toString()
             else if (n === 9)
                 O = TrapIC()
             else if (n === 10) {
@@ -228,13 +232,13 @@ const SecuritySheaf = (props) => {
         
                     let O2 = ICOptions[n2]
                     if ((n2 === 2)|(n2 === 8))
-                        O2 += "-" + Dice(1,3,0).toString() + ")"
+                        O2 += "-" + Dice(1,3,0).toString()
                     else if (n2 === 5)
                         O2 = ""
                     else if (n2 === 9)
                         O2 = TrapIC()
         
-                    O += O2
+                    O = [...O,O2];
                 }
             }   
             return O
@@ -387,7 +391,7 @@ const SecuritySheaf = (props) => {
 
         if (sheafDifficulty === "easy") {
             secValue = Dice(1,3,3);
-           
+            setSecurityValue(secValue);
             AccessValue     = Dice(1,3,7).toString();
             ControlValue    = Dice(1,3,7).toString();
             IndexValue      = Dice(1,3,7).toString();
@@ -417,7 +421,7 @@ const SecuritySheaf = (props) => {
             SlaveValue      = Dice(1,6,12).toString();
             SecuritySheafOutput += sheafCode + "-" + secValue.toString() + "/" + Dice(1,6,12).toString() + "/" + Dice(1,6,12).toString() + "/" + Dice(1,6,12).toString() + "/" + Dice(1,6,12).toString() + "/" + Dice(1,6,12).toString() + "\n";
         }
-        setSheafDisplay(sheafCode.toUpperCase() + "-" + secValue.toString() + '  (ACIFS) ' +AccessValue+ "/" +ControlValue+ "/" +IndexValue+ "/" +FilesValue+ "/" +SlaveValue  );
+        setSheafDisplay(sheafCode.toUpperCase() + "-" + secValue.toString() + ' (ACIFS) ' +AccessValue+ "/" +ControlValue+ "/" +IndexValue+ "/" +FilesValue+ "/" +SlaveValue  );
         
         if(sheafCode === "blue")  { StepModifier = 4 }
         if(sheafCode === "green") { StepModifier = 3 }
@@ -427,30 +431,30 @@ const SecuritySheaf = (props) => {
         if (NastySurprises === true) {
             //Still need to work this in, see about how we can display this nicely when its enabled.
             // let Surprises = ["Semi-Autonomous Knowbot", "Teleporting SAN", "Vanishing SAN", "Bouncer Host", "Data Bomb", "Scramble IC", "Security Decker(s)", "Worm", "Chokepoint", "Trap Door", "Virtual Host"]
-            // let n = Dice(2,6,-2)
-            // let S = Surprises[n]
+            // let n = Dice(2,6,-2);
+            // let S = Surprises[n];
             // if (n === 4) {
             //     if (Dice(1,6,0) >= 5)
-            //         S = "Pavlov " + S
+            //         S = "Pavlov " + S;
             //     if (Dice(1,6,0) <= 4)
-            //         S += " guarding a file"
+            //         S += " guarding a file";
             //     else
-            //         S += " guarding a slave device"
+            //         S += " guarding a slave device";
             // }
             // else if (n === 5) {
-            //     Roll = Dice(1,6,0)
+            //     Roll = Dice(1,6,0);
             //     if (Roll <= 2)
-            //         S += " guarding Access subsystem"
+            //         S += " guarding Access subsystem";
             //     else if ((Roll == 3)|(Roll == 4))
-            //         S += " guarding Files subsystem"
+            //         S += " guarding Files subsystem";
             //     else if (Roll >= 5)
-            //         S += " guarding Slave subsystem"
+            //         S += " guarding Slave subsystem";
             // }
             // else if (n === 7) {
-            //     S += Worm()
+            //     S += Worm();
             // }
 
-            //setNastySurprisesOutput(S);
+            // setNastySurprisesOutput(S);
         }
 
         SecuritySheafOutput += "\nStep: Event"
@@ -546,7 +550,7 @@ const SecuritySheaf = (props) => {
             <h1>Shadowrun Matrix Generator</h1>
         </Row>
         <Row>
-            <Col >
+            <div className='col-md-6 col-xs-12' >
                 <Form className='align-left'>
                     <div onChange={onChangeSheafCode}> 
                         <h2>System Color</h2>
@@ -612,31 +616,42 @@ const SecuritySheaf = (props) => {
                             <input type="checkbox" name='ICHaveOptions' value={ICHaveOptions} onChange={onChangeICHaveOptions} aria-label="IC with Extra?"/>
                             &nbsp;IC with Extra?
                         </label>
-                    </div>   
-
+                    </div>
                     <Button onClick={GenerateSheaf}>Generate Host</Button>
                 </Form>
-            </Col>
-            <Col>
+                <Row className='CombatStats'>
+                    <div className="col-md-12 col-xs-12">
+                        <h3>Combat Stats</h3>
+                    </div>
+                    <Col className="col-md-6 col-xs-12">Legitimate&nbsp;Icon To-Hit&nbsp;TN: {CombatStats[sheafCode].Legitimate}</Col>
+                    <Col className="col-md-6 col-xs-12">Intruding&nbsp;Icon To-Hit&nbsp;TN: {CombatStats[sheafCode].Intruding}</Col>
+                    
+                    <Col className="col-md-4 col-xs-12">IC&nbsp;Damage: {CombatStats[sheafCode].ICDamage}</Col>
+                    <Col className="col-md-4 col-xs-12">IC&nbsp;Init: {CombatStats[sheafCode].ICInit}</Col>
+                    <Col className="col-md-4 col-xs-12">DumpShock: {CombatStats[sheafCode].DumpShock}</Col>
+                </Row>
+            </div>
+            <div className='col-md-6 col-xs-12' >
                 <Row>
                     <h3>Step / Intrustion Counter Measure</h3>
-                    <h4>{sheafDisplay + " " }</h4>
+                    <h4>{sheafDisplay + " "}</h4>
                     <hr></hr>
+                    {NastySurprisesOutput}
                 {
                     EventList.map((item,index) => {   
                         if(item.type === 'IC'){
-                            return (<IC ICStep={item.ICStep} ICName={item.ICName} ICSubType={item.ICSubType} ICExtra={item.ICExtra} ICRating={item.ICRating} key={index}/>)
+                            return (<IC ICStep={item.ICStep} ICName={item.ICName} ICSubType={item.ICSubType} ICExtra={item.ICExtra} ICOptions={item.ICOptions} ICRating={item.ICRating} key={index}/>)
                         }else{
-                            return (<ServerEvent ICStep={item.ICStep} EventName={item.EventName} EventDescription={item.EventName} key={index} />)
+                            return (<ServerEvent ICStep={item.ICStep} EventName={item.EventName} EventDescription={item.EventName} key={index}/>)
                         }
                     })
                 }
                 <hr></hr>         
                 {
-                    PayDataList.map((item,index) => <PayData key={index} size={item.size} protected={item.protected} defType={item.defType} defRating={item.defRating}  description={item.description} /> )
+                    PayDataList.map((item,index) => <PayData key={index} size={item.size} protected={item.protected} defType={item.defType} defRating={item.defRating} description={item.description}/> )
                 }
                 </Row>
-            </Col>
+            </div>
         </Row>
         
     </Container>);
