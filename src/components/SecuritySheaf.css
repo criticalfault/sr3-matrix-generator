@@ -6,3 +6,10 @@
 #SecuritySheafOutput{
     text-align: left;
 }
+
+.CombatStats{
+    border: solid 1px black;
+    margin:5px;
+    padding: 3px;
+    text-align: left;
+}
