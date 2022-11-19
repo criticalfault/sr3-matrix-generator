@@ -10,6 +10,7 @@ import Form from 'react-bootstrap/Form';
 import IC from './IC.js';
 import ServerEvent from './ServerEvent';
 import PayData from './PayData.js';
+import NastySurprise from './NastySurprise.js'
 
 const SecuritySheaf = (props) => {
     const [sheafCode, setSheafCode] = useState('blue');
@@ -22,6 +23,7 @@ const SecuritySheaf = (props) => {
     const SecurityValue = createRef();
     const [NastySurprisesOutput, setNastySurprisesOutput] = useState('');
     const [EventList, setEventList] = useState([]);
+    const [SystemSurprise, setSystemSurprise] = useState([]);
     const [PayDataList, setPayDataList] = useState([]);
     
     const CombatStats = {
@@ -30,9 +32,10 @@ const SecuritySheaf = (props) => {
         "orange":{ "Legitimate":5, "Intruding":4, "ICDamage":"Serious",  "DumpShock":"Serious",  "ICInit":"3d6+Rating", "ConstructHackingPool":2, "CascadeIncrease":"50% or 3"  },
         "red":   { "Legitimate":6, "Intruding":3, "ICDamage":"Serious",  "DumpShock":"Deadly",   "ICInit":"4d6+Rating", "ConstructHackingPool":3, "CascadeIncrease":"100% or 4" }
     }
-    var EventListTemp = [];
+    let EventListTemp = [];
+    let NastySurprisesTemp = [];
     const Dice = (NumberDice, Sides, Modifier) => {
-        var roll = 0
+        let roll = 0
         for (let i = 0; i < NumberDice; i++) {
             roll += Math.ceil(Math.random() * Sides)
         }
@@ -41,8 +44,8 @@ const SecuritySheaf = (props) => {
     }
 
     const generateICRating = () => {
-        var Roll = Dice(2,6,0)
-        var Rating = 0;
+        let Roll = Dice(2,6,0)
+        let Rating = 0;
     
         if (SecurityValue.current <= 4) {
             if (Roll <= 5)
@@ -165,9 +168,10 @@ const SecuritySheaf = (props) => {
             if (t >= 5)
                 ICSubType = "Positive Conditioning"
         }
+        let ICOptions = ProactiveOptions();
         let ICRating = generateICRating();
         let ICExtra = "-" + ICRating;
-        EventListTemp.push({"type":"IC", "ICStep":ICStep, "ICSubType":ICSubType, "ICRating":ICRating, "ICName":ICName, "ICExtra":ICExtra});
+        EventListTemp.push({"type":"IC", "ICStep":ICStep, "ICSubType":ICSubType, "ICRating":ICRating, "ICName":ICName, "ICExtra":ICExtra, "ICOptions":ICOptions});
         return I + ICExtra;
     }
     
@@ -383,7 +387,7 @@ const SecuritySheaf = (props) => {
         let FilesValue = 0;
         let SlaveValue = 0;
         let secValue = 0;
-
+        NastySurprisesTemp = [];
         EventListTemp = [];
 
         if (sheafDifficulty === "easy") {
@@ -425,35 +429,36 @@ const SecuritySheaf = (props) => {
         if(sheafCode === "orange"){ StepModifier = 2 }
         if(sheafCode === "red")   { StepModifier = 1 }
 
-        if (NastySurprises === true) {
+        if (NastySurprises.current.checked === true) {
             //Still need to work this in, see about how we can display this nicely when its enabled.
-            // let Surprises = ["Semi-Autonomous Knowbot", "Teleporting SAN", "Vanishing SAN", "Bouncer Host", "Data Bomb", "Scramble IC", "Security Decker(s)", "Worm", "Chokepoint", "Trap Door", "Virtual Host"]
-            // let n = Dice(2,6,-2);
-            // let S = Surprises[n];
-            // if (n === 4) {
-            //     if (Dice(1,6,0) >= 5)
-            //         S = "Pavlov " + S;
-            //     if (Dice(1,6,0) <= 4)
-            //         S += " guarding a file";
-            //     else
-            //         S += " guarding a slave device";
-            // }
-            // else if (n === 5) {
-            //     Roll = Dice(1,6,0);
-            //     if (Roll <= 2)
-            //         S += " guarding Access subsystem";
-            //     else if ((Roll == 3)|(Roll == 4))
-            //         S += " guarding Files subsystem";
-            //     else if (Roll >= 5)
-            //         S += " guarding Slave subsystem";
-            // }
-            // else if (n === 7) {
-            //     S += Worm();
-            // }
-
-            // setNastySurprisesOutput(S);
+            let Surprises = ["Semi-Autonomous Knowbot", "Teleporting SAN", "Vanishing SAN", "Bouncer Host", "Data Bomb", "Scramble IC", "Security Decker(s)", "Worm", "Chokepoint", "Trap Door", "Virtual Host"]
+            let n = Dice(2,6,-2);
+            let S = Surprises[n];
+            let Options = "";
+            if (n === 4) {
+                if (Dice(1,6,0) >= 5)
+                    Options = "Pavlov " + S;
+                if (Dice(1,6,0) <= 4)
+                    Options= " guarding a file";
+                else
+                    Options= " guarding a slave device";
+            }
+            else if (n === 5) {
+                Roll = Dice(1,6,0);
+                if (Roll <= 2)
+                    Options= " guarding Access subsystem";
+                else if ((Roll == 3)|(Roll == 4))
+                    Options= " guarding Files subsystem";
+                else if (Roll >= 5)
+                    Options= " guarding Slave subsystem";
+            }
+            else if (n === 7) {
+                Options = Worm();
+            }
+            NastySurprisesTemp.push({"type":S, "options":Options });
+            setSystemSurprise(NastySurprisesTemp);
+            setNastySurprisesOutput(S);
         }
-        console.log(PaydataCheck.current.checked);
         SecuritySheafOutput += "\nStep: Event"
 
         for (let n = 0; AlertStatus < 3; n++) {
@@ -576,7 +581,7 @@ const SecuritySheaf = (props) => {
                     <div>
                         <label className="form-check-label">
                             <input type="checkbox" name='NastySurprises' ref={NastySurprises} aria-label="Nasty Surprises?"/>
-                            &nbsp;Nasty Surprises?
+                            &nbsp;Nasty Surprises? (Coming Soon!)
                         </label>
                     </div>
                     <div >
@@ -616,20 +621,24 @@ const SecuritySheaf = (props) => {
                     <h3>Step / Intrustion Counter Measure</h3>
                     <h4>{sheafDisplay + " "}</h4>
                     <hr></hr>
-                    {NastySurprisesOutput}
-                {
-                    EventList.map((item,index) => {   
-                        if(item.type === 'IC'){
-                            return (<IC ICStep={item.ICStep} ICName={item.ICName} ICSubType={item.ICSubType} ICExtra={item.ICExtra} ICOptions={item.ICOptions} ICRating={item.ICRating} key={index}/>)
-                        }else{
-                            return (<ServerEvent ICStep={item.ICStep} EventName={item.EventName} EventDescription={item.EventName} key={index}/>)
-                        }
-                    })
-                }
-                <hr></hr>         
-                {
-                    PayDataList.map((item,index) => <PayData key={index} size={item.size} protected={item.protected} defType={item.defType} defRating={item.defRating} description={item.description}/> )
-                }
+                    {   
+                        SystemSurprise.map((item,index) => {    
+                            return (<NastySurprise type={item.type}  options={item.options} key={index} />)
+                      })
+                    }  
+                    {
+                        EventList.map((item,index) => {   
+                            if(item.type === 'IC'){
+                                return (<IC ICStep={item.ICStep} ICName={item.ICName} ICSubType={item.ICSubType} ICExtra={item.ICExtra} ICOptions={item.ICOptions} ICRating={item.ICRating} key={index}/>)
+                            }else{
+                                return (<ServerEvent ICStep={item.ICStep} EventName={item.EventName} EventDescription={item.EventName} key={index}/>)
+                            }
+                        })
+                    }
+                    <hr></hr>         
+                    {
+                        PayDataList.map((item,index) => <PayData key={index} size={item.size} protected={item.protected} defType={item.defType} defRating={item.defRating} description={item.description}/> )
+                    }
                 </Row>
             </div>
         </Row>

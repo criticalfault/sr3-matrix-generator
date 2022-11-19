@@ -34,6 +34,86 @@ const IC = (props) => {
     }
 
     const ICTypes = {
+        "Trace":`Hunt Cycle: During the hunt cycle, trace IC makes Attack Tests against
+        the intruder using the system's Security Value. All of the standard
+        cybercombat rules apply. The trace IC suffers a +1 target
+        number modifier for each successful Redirect Datatrail operation
+        the targeted icon performs (see p. 100).
+
+        If struck, the intruder makes an Evasion (Trace IC Rating)
+        Test. If the targeted icon achieves an equal or greater number
+        of successes, the attack fails to hit. If the trace IC achieves at
+        least 1 net success, it has successfully hit the intruder and
+        locked onto its datatrail, and the location cycle begins.
+        
+        Location Cycle: 
+        The location cycle begins as soon as the trace IC makes a
+        successful Attack Test against a decker. The IC immediately
+        "disappears" and becomes reactive IC.
+
+        To determine how long the location cycle lasts, add the
+        intruder's jackpoint Trace Modifier (see p. 32) and the rating of
+        any camo utility (see p. 70) he is running to 10. Divide the
+        result by the number of net successes the trace IC achieved in
+        its hunt cycle Attack Test. The result, rounded down, is the
+        number of full Combat Turns the trace IC needs to complete its
+        cycle and locate the intruder's jackpoint.
+
+        Trace Effects: 
+        If a trace program completes its location cycle successfully,
+        several things happen. First, the system records the jackpoint's
+        serial number and physical location in its security logs.
+        Second, the system notifies any physical security assets
+        responsible for monitoring the invaded system. These security
+        personnel can then initiate physical measures against the
+        intruder's location (i.e., they send out the goons).
+        Simultaneously, the trace program activates IC-targeting and
+        tally-acceleration bonuses in the system.
+        
+        IC Targeting: Because the intruder has been located, the
+        system can target the intruder more effectively. Reduce the target
+        numbers of all Attack Tests made by the system's proactive
+        IC programs against the intruder by 1.
+        
+        Tally Acceleration: The system will be more aware of a
+        traced intruder's actions. Whenever the intruder generates
+        increases to his security tally, add 1 extra point to the increase.
+        For example, if a host scores 2 successes in a System Test
+        against a traced intruder, add 3 to the intruder's security tally.
+        
+        Physical Measures: The physical measures triggered by a
+        successful trace program are determined by the gamemaster.
+        For example, say the trace IC has reported that a decker is
+        tapped into a dataline in a squat in Redmond. The physical
+        response depends entirely on what resources the invaded system's
+        owners have, jurisdictional issues, the location of the
+        nearest useful assets, whether Lone Star or any other local lawenforcement
+        agency has been called in, the standard Security
+        Rating of the site and so on.
+
+        Running for It: A Graceful Logoff operation enables an
+        intruder to get away and immediately stop the location cycle of
+        a trace program. However, trace IC tries to prevent this operation, 
+        so increase the character's target number for the operation by the IC's rating.
+        Simply jacking out of the system will not defeat trace IC,
+        because jacking out leaves the comm links in the network open
+        for a measurable period. First, the LTG has to verify carrier signal
+        loss. Then it gracefully dismantles the user's datatrail, the
+        same way a user-initiated Graceful Logoff does. Just because a
+        user jacks out doesn't mean his datatrail disappears in a big
+        puff of bits. If a user does jack out, roll 1D6 - 1 (minimum value
+        of 1). The result is the number of turns for which the user's
+        datatrail remains intact. If the die roll result equals or exceeds
+        the number of turns remaining in the trace program's location
+        cycle, the IC will still locate the jackpoint.
+        
+        Likewise, if an intruder is knocked unconscious or killed by
+        IC, or if his persona is crashed, a trace IC program in its location
+        cycle will keep a connection open to the cyberterminal so that
+        it may continue to trace the jackpoint. Again, the character must
+        jack out to defeat the trace IC, and even then his datatrail
+        remains intact and traceable for 1D6 - 1 (minimum 1) turns.
+        `,
         "Probe":"Probe IC is reactive IC that conducts additional interrogations of data packets and program requests for computer resources. Probe IC helps detect any operations performed by unauthorized programs. For a probe-equipped system, the gamemaster makes a Probe Test using its probe IC Rating against a decker's Detection Factor every time the decker makes a System Test. Add any successes from the Probe Test to the decker's security tally.",
         "Scout":"Scout IC is a proactive variant of probe IC (p. 228, SR3). When scout IC is triggered, it acts as reactive probe IC: the gamemaster uses the IC's rating to make a test against the intruder's Detection Factor anytime the intruder makes a System Test. Any successes from these tests are added to the intruder's security tally.\n Unlike probe IC, however, scout IC switches into a proactive mode when attacked in cybercombat or when a passive or active alert is triggered. In this mode, scout IC no longer probes the intruder like probe IC but actively defends itself in cybercombat, using the standard cybercombat rules. Proactive scout IC also makes probing Attack Tests against intruders. These attacks do not inflict damage by themselves but enhance attacks by other IC in the system. Each attack success achieved by the scout IC adds 1 die to the Security Value for the next attack made against the intruder by any other piece of proactive IC. Successes achieved from additional probing attacks add cumulative dice, up to a maximum equal to the scout IC's rating.",
         "Killer":"Killer IC is proactive IC that causes damage to icons in cybercombat. All killer IC has a Damage Code and its Power is equal to its IC Rating. The Damage Level of killer IC is based on the host's security code. Killer IC on Blue or Green systems does Medium damage; killer IC on Orange and Red systems does Serious damage. For example, Killer-6 IC on an Orange host would do 6S damage. This damage rises a stage for every 2 successes achieved on the host's Attack Test, just like damage in standard combat. If an attack from killer IC fills the Condition Monitor of a decker, the decker is dumped. Armor utility programs (p. 222) reduce damage from killer IC.",
