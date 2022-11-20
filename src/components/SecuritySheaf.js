@@ -12,6 +12,7 @@ import PayData from './PayData.js';
 import NastySurprise from './NastySurprise.js'
 
 const SecuritySheaf = (props) => {
+    const [SecurityTally, setSecurityTally] = useState(0);
     const [sheafCode, setSheafCode] = useState('blue');
     const [sheafDifficulty, setSheafDifficulty] = useState('easy');
     const [sheafDisplay, setSheafDisplay] = useState('');
@@ -526,6 +527,10 @@ const SecuritySheaf = (props) => {
         setSheafDifficulty(event.target.value);
     }
 
+    const onChangeSecurityTally = event => {
+        setSecurityTally(event.target.value);
+    }
+
     return (
     <Container id='SheafContainer'>
         <Row>
@@ -618,6 +623,12 @@ const SecuritySheaf = (props) => {
                     <h3>Step / Intrustion Counter Measure</h3>
                     <h4>{sheafDisplay + " "}</h4>
                     <hr></hr>
+                    <div className='mb-2' onChange={onChangeSecurityTally}>
+                        <label className="form-check-label">
+                            Security Tally<input type="number" min={0} step={1} defaultValue={0} className='form-control' id="securityTally"></input>
+                        </label>
+                    </div>
+                    <hr></hr>
                     {   
                         SystemSurprise.map((item,index) => {    
                             return (<NastySurprise type={item.type}  options={item.options} key={index} />)
@@ -626,9 +637,9 @@ const SecuritySheaf = (props) => {
                     {
                         EventList.map((item,index) => {   
                             if(item.type === 'IC'){
-                                return (<IC ICStep={item.ICStep} ICName={item.ICName} ICSubType={item.ICSubType} ICExtra={item.ICExtra} ICOptions={item.ICOptions} ICRating={item.ICRating} key={index}/>)
+                                return (<IC ICStep={item.ICStep} ICName={item.ICName} ICSubType={item.ICSubType} ICExtra={item.ICExtra} ICOptions={item.ICOptions} ICRating={item.ICRating} key={index} triggered={SecurityTally >= item.ICStep}/>)
                             }else{
-                                return (<ServerEvent ICStep={item.ICStep} EventName={item.EventName} EventDescription={item.EventName} key={index}/>)
+                                return (<ServerEvent ICStep={item.ICStep} EventName={item.EventName} EventDescription={item.EventName} key={index} triggered={SecurityTally >= item.ICStep}/>)
                             }
                         })
                     }

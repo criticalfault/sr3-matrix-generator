@@ -1,3 +1,7 @@
 .ICButton{
     width: 320px;
 }
+
+.triggered{
+    background-color: red;
+}
