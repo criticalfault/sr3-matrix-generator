@@ -72,9 +72,19 @@ down—such as applications, frames and agents, command
 sets, IC and so on—immediately crash. Ongoing and monitored
 operations terminate as well.`
     }
+
+const wasTriggered = (triggered) => {
+    if(triggered){
+        return "ServerEventButton triggered";
+    }else{
+        return "ServerEventButton ";
+    }
+}
+
+
 return (
     <div className='mb-2'>
-        <Button className="ServerEventButton" variant="primary" onClick={handleShow}>{props.ICStep}: {props.EventName}</Button>
+        <Button className={wasTriggered(props.triggered)} variant="primary" onClick={handleShow}>{props.ICStep}: {props.EventName}</Button>
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title>{props.EventName}</Modal.Title>

@@ -163,10 +163,18 @@ const IC = (props) => {
         }
     }
 
+    const wasTriggered = (triggered) => {
+        if(triggered){
+            return "ICButton triggered";
+        }else{
+            return "ICButton ";
+        }
+    }
+
 
 return (
     <div className='mb-2'>
-        <Button className="ICButton" variant="primary" onClick={handleShow}>{props.ICStep}: {props.ICName + ' - '+ props.ICRating + hasSubType(props.ICSubType) + hasOptions(props.ICOptions) }</Button>
+        <Button className={wasTriggered(props.triggered)} variant="primary" onClick={handleShow}>{props.ICStep}: {props.ICName + ' - '+ props.ICRating + hasSubType(props.ICSubType) + hasOptions(props.ICOptions) }</Button>
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title>{props.ICName + ' - '+ props.ICRating + hasSubType(props.ICSubType) + hasOptions(props.ICOptions)}</Modal.Title>
