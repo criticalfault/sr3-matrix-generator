@@ -1,41 +1,39 @@
 import React from 'react';
-import { useState } from "react";
+import { useState, createRef } from "react";
 import './SecuritySheaf.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import IC from './IC.js';
 import ServerEvent from './ServerEvent';
 import PayData from './PayData.js';
+import NastySurprise from './NastySurprise.js'
 
 const SecuritySheaf = (props) => {
     const [sheafCode, setSheafCode] = useState('blue');
     const [sheafDifficulty, setSheafDifficulty] = useState('easy');
     const [sheafDisplay, setSheafDisplay] = useState('');
-    const [PaydataCheck, setPaydataCheck] = useState(false);
-    const [NastySurprises, setNastySurprises] = useState(false);
-    const [NastySurprisesOutput, setNastySurprisesOutput] = useState('');
-    const [SecurityValue, setSecurityValue] = useState('');
-    const [SecuritySheafOutput, setSecuritySheafOutput] = useState('');
-    const [LethalSystem, setLethalSystem]= useState(false);
+    const PaydataCheck = createRef();
+    const NastySurprises = createRef();
+    const LethalSystem = createRef();
+    const ICHaveOptions = createRef();
+    const SecurityValue = createRef();
     const [EventList, setEventList] = useState([]);
+    const [SystemSurprise, setSystemSurprise] = useState([]);
     const [PayDataList, setPayDataList] = useState([]);
-    const [ICHaveOptions, setICHaveOptions] = useState(false);
+    
     const CombatStats = {
         "blue":  { "Legitimate":3, "Intruding":6, "ICDamage":"Moderate", "DumpShock":"Light",    "ICInit":"1d6+Rating", "ConstructHackingPool":0, "CascadeIncrease":"1"         },
         "green": { "Legitimate":4, "Intruding":5, "ICDamage":"Moderate", "DumpShock":"Moderate", "ICInit":"2d6+Rating", "ConstructHackingPool":1, "CascadeIncrease":"25% or 2"  },
         "orange":{ "Legitimate":5, "Intruding":4, "ICDamage":"Serious",  "DumpShock":"Serious",  "ICInit":"3d6+Rating", "ConstructHackingPool":2, "CascadeIncrease":"50% or 3"  },
         "red":   { "Legitimate":6, "Intruding":3, "ICDamage":"Serious",  "DumpShock":"Deadly",   "ICInit":"4d6+Rating", "ConstructHackingPool":3, "CascadeIncrease":"100% or 4" }
     }
-    var EventListTemp = [];
-
-
-
+    let EventListTemp = [];
+    let NastySurprisesTemp = [];
     const Dice = (NumberDice, Sides, Modifier) => {
-        var roll = 0
+        let roll = 0
         for (let i = 0; i < NumberDice; i++) {
             roll += Math.ceil(Math.random() * Sides)
         }
@@ -44,10 +42,10 @@ const SecuritySheaf = (props) => {
     }
 
     const generateICRating = () => {
-        var Roll = Dice(2,6,0)
-        var Rating = 0;
+        let Roll = Dice(2,6,0)
+        let Rating = 0;
     
-        if (SecurityValue <= 4) {
+        if (SecurityValue.current <= 4) {
             if (Roll <= 5)
                 Rating = "4"
             if ((Roll >= 6)&&(Roll <= 8))
@@ -57,7 +55,7 @@ const SecuritySheaf = (props) => {
             if (Roll === 12)
                 Rating = "7"
         }
-        if ((SecurityValue >= 5)&&(SecurityValue <= 7)) {
+        if ((SecurityValue.current >= 5)&&(SecurityValue.current <= 7)) {
             if (Roll <= 5)
                 Rating = "5"
             if ((Roll >= 6)&&(Roll <= 8))
@@ -67,7 +65,7 @@ const SecuritySheaf = (props) => {
             if (Roll === 12)
                 Rating = "10"
         }
-        if ((SecurityValue >= 8)&&(SecurityValue <= 10)) {
+        if ((SecurityValue.current >= 8)&&(SecurityValue.current <= 10)) {
             if (Roll <= 5)
                 Rating = "6"
             if ((Roll >= 6)&&(Roll <= 8))
@@ -77,7 +75,7 @@ const SecuritySheaf = (props) => {
             if (Roll === 12)
                 Rating = "12"
         }
-        if (SecurityValue >= 11) {
+        if (SecurityValue.current >= 11) {
             if (Roll <= 5)
                 Rating = "8"
             if ((Roll >= 6)&&(Roll <= 8))
@@ -168,14 +166,15 @@ const SecuritySheaf = (props) => {
             if (t >= 5)
                 ICSubType = "Positive Conditioning"
         }
+        let ICOptions = ProactiveOptions();
         let ICRating = generateICRating();
         let ICExtra = "-" + ICRating;
-        EventListTemp.push({"type":"IC", "ICStep":ICStep, "ICSubType":ICSubType, "ICRating":ICRating, "ICName":ICName, "ICExtra":ICExtra});
+        EventListTemp.push({"type":"IC", "ICStep":ICStep, "ICSubType":ICSubType, "ICRating":ICRating, "ICName":ICName, "ICExtra":ICExtra, "ICOptions":ICOptions});
         return I + ICExtra;
     }
     
     const TrapIC = () => {
-        if(ICHaveOptions){
+        if(ICHaveOptions.current.checked){
             let Trap = ["Data Bomb", "Blaster", "Blaster", "Blaster", "Killer", "Killer", "Killer", "Sparky", "Sparky", "Sparky", "Black"]
             let n = Dice(2,6,-2);
             let I = Trap[n] + "-" + generateICRating();
@@ -200,7 +199,7 @@ const SecuritySheaf = (props) => {
     }
     
     const ReactiveOptions = () => {
-        if(ICHaveOptions){
+        if(ICHaveOptions.current.checked){
             let ICOptions = ["Shielding", "Shielding", "Shielding", "Armor", false, false, "Trap", "Armor", "Shifting", "Shifting", "Shifting"]
             let n = Dice(2,6,-2)
             let O = ICOptions[n]
@@ -214,7 +213,7 @@ const SecuritySheaf = (props) => {
     }
 
     const ProactiveOptions = () => {
-        if(ICHaveOptions){
+        if(ICHaveOptions.current.checked){
             let ICOptions = ["Party Cluster", "Party Cluster", "Expert Offense", "Shifting", "Cascading", false, "Armor", "Shielding", "Expert Defense", "Trap", "Roll Twice"]
             let n = Dice(2,6,-2);
 
@@ -386,12 +385,12 @@ const SecuritySheaf = (props) => {
         let FilesValue = 0;
         let SlaveValue = 0;
         let secValue = 0;
-
+        NastySurprisesTemp = [];
         EventListTemp = [];
 
         if (sheafDifficulty === "easy") {
             secValue = Dice(1,3,3);
-            setSecurityValue(secValue);
+            SecurityValue.current = secValue;
             AccessValue     = Dice(1,3,7).toString();
             ControlValue    = Dice(1,3,7).toString();
             IndexValue      = Dice(1,3,7).toString();
@@ -402,7 +401,7 @@ const SecuritySheaf = (props) => {
 
         if (sheafDifficulty === "average") {
             secValue = Dice(1,3,6);
-            setSecurityValue(secValue);
+            SecurityValue.current = secValue;
             AccessValue     = Dice(2,3,9).toString();
             ControlValue    = Dice(2,3,9).toString();
             IndexValue      = Dice(2,3,9).toString();
@@ -413,7 +412,7 @@ const SecuritySheaf = (props) => {
 
         if (sheafDifficulty === "hard") {
             secValue = Dice(2,3,6);
-            setSecurityValue(secValue);
+            SecurityValue.current = secValue;
             AccessValue     = Dice(1,6,12).toString();
             ControlValue    = Dice(1,6,12).toString();
             IndexValue      = Dice(1,6,12).toString();
@@ -428,35 +427,35 @@ const SecuritySheaf = (props) => {
         if(sheafCode === "orange"){ StepModifier = 2 }
         if(sheafCode === "red")   { StepModifier = 1 }
 
-        if (NastySurprises === true) {
+        if (NastySurprises.current.checked === true) {
             //Still need to work this in, see about how we can display this nicely when its enabled.
-            // let Surprises = ["Semi-Autonomous Knowbot", "Teleporting SAN", "Vanishing SAN", "Bouncer Host", "Data Bomb", "Scramble IC", "Security Decker(s)", "Worm", "Chokepoint", "Trap Door", "Virtual Host"]
-            // let n = Dice(2,6,-2);
-            // let S = Surprises[n];
-            // if (n === 4) {
-            //     if (Dice(1,6,0) >= 5)
-            //         S = "Pavlov " + S;
-            //     if (Dice(1,6,0) <= 4)
-            //         S += " guarding a file";
-            //     else
-            //         S += " guarding a slave device";
-            // }
-            // else if (n === 5) {
-            //     Roll = Dice(1,6,0);
-            //     if (Roll <= 2)
-            //         S += " guarding Access subsystem";
-            //     else if ((Roll == 3)|(Roll == 4))
-            //         S += " guarding Files subsystem";
-            //     else if (Roll >= 5)
-            //         S += " guarding Slave subsystem";
-            // }
-            // else if (n === 7) {
-            //     S += Worm();
-            // }
-
-            // setNastySurprisesOutput(S);
+            let Surprises = ["Semi-Autonomous Knowbot", "Teleporting SAN", "Vanishing SAN", "Bouncer Host", "Data Bomb", "Scramble IC", "Security Decker(s)", "Worm", "Chokepoint", "Trap Door", "Virtual Host"]
+            let n = Dice(2,6,-2);
+            let S = Surprises[n];
+            let Options = "";
+            if (n === 4) {
+                if (Dice(1,6,0) >= 5)
+                    Options = "Pavlov " + S;
+                if (Dice(1,6,0) <= 4)
+                    Options= {"extra":" guarding a file", "rating":generateICRating(), "type":S};
+                else
+                    Options= {"extra":" guarding a slave device", "rating":generateICRating(), "type":S};
+            }
+            else if (n === 5) {
+                Roll = Dice(1,6,0);
+                if (Roll <= 2)
+                    Options= {"extra":" guarding Access subsystem", "rating":generateICRating(), "type":S};
+                else if ((Roll === 3)|(Roll === 4))
+                    Options= {"extra":" guarding Files subsystem","rating":generateICRating(), "type":S};
+                else if (Roll >= 5)
+                    Options= {"extra":" guarding Slave subsystem","rating":generateICRating(), "type":S};
+            }
+            else if (n === 7) {
+                Options = Worm();
+            }
+            NastySurprisesTemp.push({"type":S, "options":Options });
+            setSystemSurprise(NastySurprisesTemp);
         }
-
         SecuritySheafOutput += "\nStep: Event"
 
         for (let n = 0; AlertStatus < 3; n++) {
@@ -497,7 +496,7 @@ const SecuritySheaf = (props) => {
                 if ((Roll === 4)|(Roll === 5))
                     Event = ProactiveWhite(CurrentStep)
                 if ((Roll === 6)|(Roll === 7))
-                    if(LethalSystem){
+                    if(LethalSystem.current.checked){
                         Event = Black(CurrentStep)
                     }else{
                         Event = ProactiveGray(CurrentStep)
@@ -512,11 +511,10 @@ const SecuritySheaf = (props) => {
         }
     
         // Generate paydata
-        if (PaydataCheck === true){
+        if (PaydataCheck.current.checked === true){
             SecuritySheafOutput += "\n\n" + PayDataGenerate(sheafCode);
             console.log(SecuritySheafOutput);
         }
-        setSecuritySheafOutput(SecuritySheafOutput);
         setEventList(EventListTemp);
     }
 
@@ -526,22 +524,6 @@ const SecuritySheaf = (props) => {
 
     const onChangeSheafDifficulty = (event) =>{
         setSheafDifficulty(event.target.value);
-    }
-
-    const onChangeNastySurprises = (event) =>{
-        setNastySurprises(event.target.checked);
-    }
-
-    const onChangePaydata = (event) =>{
-        setPaydataCheck(event.target.checked);
-    }
-
-    const onChangeLethalSystem = (event) =>{
-        setLethalSystem(event.target.checked);
-    }
-
-    const onChangeICHaveOptions = (event) =>{
-        setICHaveOptions(event.target.checked);
     }
 
     return (
@@ -561,7 +543,7 @@ const SecuritySheaf = (props) => {
                         </div>
                         <div className="form-check">
                             <label className="form-check-label">Green
-                                <input className="form-check-input" type="radio" value='green' name="sheafCode"/>
+                                <input className="form-check-input" type="radio" value='green' name="sheafCode" />
                             </label>
                         </div>
                         <div className="form-check">
@@ -595,25 +577,25 @@ const SecuritySheaf = (props) => {
                     </div>
                     <div>
                         <label className="form-check-label">
-                            <input type="checkbox" name='NastySurprises' value={NastySurprises} onChange={onChangeNastySurprises} aria-label="Nasty Surprises?"/>
-                            &nbsp;Nasty Surprises?
+                            <input type="checkbox" name='NastySurprises' ref={NastySurprises} aria-label="Nasty Surprises?"/>
+                            &nbsp;Nasty Surprises? (Coming Soon!)
                         </label>
                     </div>
                     <div >
                         <label className="form-check-label">
-                            <input type="checkbox" name='Paydata' value={PaydataCheck}  onChange={onChangePaydata} aria-label="Paydata?"/>
+                            <input type="checkbox" name='Paydata' ref={PaydataCheck} aria-label="Paydata?"/>
                             &nbsp;Paydata?
                         </label>
                     </div>
                     <div >
                         <label className="form-check-label">
-                            <input type="checkbox" name='LethalSystem' value={LethalSystem} onChange={onChangeLethalSystem} aria-label="Lethal System?"/>
+                            <input type="checkbox" name='LethalSystem' ref={LethalSystem} aria-label="Lethal System?"/>
                              &nbsp;Lethal System?
                         </label>
                     </div>
                     <div c>
                         <label className="form-check-label">
-                            <input type="checkbox" name='ICHaveOptions' value={ICHaveOptions} onChange={onChangeICHaveOptions} aria-label="IC with Extra?"/>
+                            <input type="checkbox" name='ICHaveOptions' ref={ICHaveOptions} aria-label="IC with Extra?"/>
                             &nbsp;IC with Extra?
                         </label>
                     </div>
@@ -636,20 +618,24 @@ const SecuritySheaf = (props) => {
                     <h3>Step / Intrustion Counter Measure</h3>
                     <h4>{sheafDisplay + " "}</h4>
                     <hr></hr>
-                    {NastySurprisesOutput}
-                {
-                    EventList.map((item,index) => {   
-                        if(item.type === 'IC'){
-                            return (<IC ICStep={item.ICStep} ICName={item.ICName} ICSubType={item.ICSubType} ICExtra={item.ICExtra} ICOptions={item.ICOptions} ICRating={item.ICRating} key={index}/>)
-                        }else{
-                            return (<ServerEvent ICStep={item.ICStep} EventName={item.EventName} EventDescription={item.EventName} key={index}/>)
-                        }
-                    })
-                }
-                <hr></hr>         
-                {
-                    PayDataList.map((item,index) => <PayData key={index} size={item.size} protected={item.protected} defType={item.defType} defRating={item.defRating} description={item.description}/> )
-                }
+                    {   
+                        SystemSurprise.map((item,index) => {    
+                            return (<NastySurprise type={item.type}  options={item.options} key={index} />)
+                      })
+                    }  
+                    {
+                        EventList.map((item,index) => {   
+                            if(item.type === 'IC'){
+                                return (<IC ICStep={item.ICStep} ICName={item.ICName} ICSubType={item.ICSubType} ICExtra={item.ICExtra} ICOptions={item.ICOptions} ICRating={item.ICRating} key={index}/>)
+                            }else{
+                                return (<ServerEvent ICStep={item.ICStep} EventName={item.EventName} EventDescription={item.EventName} key={index}/>)
+                            }
+                        })
+                    }
+                    <hr></hr>         
+                    {
+                        PayDataList.map((item,index) => <PayData key={index} size={item.size} protected={item.protected} defType={item.defType} defRating={item.defRating} description={item.description}/> )
+                    }
                 </Row>
             </div>
         </Row>
