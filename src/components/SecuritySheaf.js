@@ -20,7 +20,6 @@ const SecuritySheaf = (props) => {
     const LethalSystem = createRef();
     const ICHaveOptions = createRef();
     const SecurityValue = createRef();
-    const [NastySurprisesOutput, setNastySurprisesOutput] = useState('');
     const [EventList, setEventList] = useState([]);
     const [SystemSurprise, setSystemSurprise] = useState([]);
     const [PayDataList, setPayDataList] = useState([]);
@@ -446,9 +445,9 @@ const SecuritySheaf = (props) => {
                 Roll = Dice(1,6,0);
                 if (Roll <= 2)
                     Options= {"extra":" guarding Access subsystem", "rating":generateICRating(), "type":S};
-                else if ((Roll === 3)|(Roll == 4))
+                else if ((Roll === 3)|(Roll === 4))
                     Options= {"extra":" guarding Files subsystem","rating":generateICRating(), "type":S};
-                else if (Roll >== 5)
+                else if (Roll >= 5)
                     Options= {"extra":" guarding Slave subsystem","rating":generateICRating(), "type":S};
             }
             else if (n === 7) {
@@ -456,7 +455,6 @@ const SecuritySheaf = (props) => {
             }
             NastySurprisesTemp.push({"type":S, "options":Options });
             setSystemSurprise(NastySurprisesTemp);
-            setNastySurprisesOutput(S);
         }
         SecuritySheafOutput += "\nStep: Event"
 
