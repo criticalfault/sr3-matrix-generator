@@ -59,7 +59,7 @@ const IC = (props) => {
         number of full Combat Turns the trace IC needs to complete its
         cycle and locate the intruder's jackpoint.
 
-        Trace Effects: 
+        Trace Effects:
         If a trace program completes its location cycle successfully,
         several things happen. First, the system records the jackpoint's
         serial number and physical location in its security logs.

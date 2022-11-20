@@ -5,7 +5,6 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import IC from './IC.js';
 import ServerEvent from './ServerEvent';
@@ -439,18 +438,18 @@ const SecuritySheaf = (props) => {
                 if (Dice(1,6,0) >= 5)
                     Options = "Pavlov " + S;
                 if (Dice(1,6,0) <= 4)
-                    Options= " guarding a file";
+                    Options= {"extra":" guarding a file", "rating":generateICRating(), "type":S};
                 else
-                    Options= " guarding a slave device";
+                    Options= {"extra":" guarding a slave device", "rating":generateICRating(), "type":S};
             }
             else if (n === 5) {
                 Roll = Dice(1,6,0);
                 if (Roll <= 2)
-                    Options= " guarding Access subsystem";
-                else if ((Roll == 3)|(Roll == 4))
-                    Options= " guarding Files subsystem";
-                else if (Roll >= 5)
-                    Options= " guarding Slave subsystem";
+                    Options= {"extra":" guarding Access subsystem", "rating":generateICRating(), "type":S};
+                else if ((Roll === 3)|(Roll == 4))
+                    Options= {"extra":" guarding Files subsystem","rating":generateICRating(), "type":S};
+                else if (Roll >== 5)
+                    Options= {"extra":" guarding Slave subsystem","rating":generateICRating(), "type":S};
             }
             else if (n === 7) {
                 Options = Worm();

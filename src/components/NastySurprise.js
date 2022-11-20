@@ -3,6 +3,7 @@ import { useState } from "react";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import './NastySurprise.css';
+import Worms from './Worms.js';
 const NastySurprise = (props) => {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -43,8 +44,37 @@ Other teleporting SANs negotiate new node addresses
 based on an entirely random process, picking RTGs out of the
 thin, virtual air of the Matrix.`,
         
-        "Vanishing SAN":``,
-        
+        "Vanishing SAN":`Vanishing SANs are active only at specific times. At all
+other times, these SANs are closed and do not even appear in
+the host or PLTG that normally connects to them. They simply
+do not exist except when active. Sensitive systems that need
+only an occasional or periodic Matrix connection will use vanishing
+SANs, so that they are off the Matrix and protected from
+Matrix-based intrusion attempts most of the time.
+If a user performs a Locate Access Node operation to find
+a vanishing SAN, he can locate the SAN only if it is currently
+open. Otherwise, the operation returns a “currently inactive”
+error.
+
+To access a vanishing SAN from the Matrix, a user must
+wait until the SAN is active and then succeed in a Logon to
+Host or LTG operation before the SAN disappears again.
+Typically, vanishing SANs stay open for no more than 10
+to 20 seconds—just enough time to dispatch and receive
+email, faxes and so on. For a typical vanishing SAN, the
+gamemaster rolls 1D6 + 1. The result is the number of turns the
+SAN remains active.
+
+If the SAN closes, a user who has accessed it from the
+Matrix will be cut off—the user is immediately dumped offline
+and may suffer dump shock. To keep the SAN from closing, the
+user must make a Freeze Vanishing SAN operation (see p. 99).
+If successful, the user has jammed the SAN open and set up
+spoof code that makes the host think its access node is safely
+offline again. The user can continue his activity within the host,
+but the SAN automatically refuses any other attempts to access
+it (until it's time for it to appear again).`,
+
         "Bouncer Host":`Bouncer hosts are capable of operating at two different
 security levels. In their normal state, they operate at a low level
 of security—usually Green or Orange. When a pre set trigger
@@ -74,9 +104,45 @@ to obtain specific details of the upgrade.
 A bouncer host may be detected before it is triggered with a successful
 Analyze Host operation (see p. 102).`, 
         
-        "Data Bomb":"",
+        "Data Bomb":`A data bomb is a form of reactive IC that is attached
+to a file or remote slave device icon. The armed data bomb 
+remains in place  until another icon accesses the file or 
+device, at which point the bomb “explodes” and damages the 
+intruder. Unlike other IC, data bombs are not triggered by 
+security tallies; they attack any user icon that accesses 
+the bomb-protected icon.
+
+Only one data bomb may be attached to a particular file or 
+remote device. Data bombs may be attached to icons that 
+are also protected by scramble IC.
+
+A data bomb can be detected by performing a successful 
+Analyze Icon operation against the bomb-protected icon.`,
         
-        "Scramble IC":"",
+    "Scramble IC":`Scramble IC is reactive IC used to protect elements of
+a host's Access, Files, or Slave subsystems. Scramble IC can be programmed
+to protect a specific component of a subsystem or the entire subsystem. 
+For example, scramble IC can protect an individual data file, a datastore,
+or all the Files functions on a host—including faxprinter output and
+dedicated terminals.
+ 
+Similarly, scramble IC on an Access subsystem can oppose logons from specific
+entry points, such as public grids and dedicated workstations, or all logons. 
+
+On a Slave subsystem, scramble IC can defend specific remote devices or all 
+devices connected to the subsystem. Scramble IC programs are designed to make it 
+impossible to Access any host or slave devices they protect, unless it is decrypted. 
+Additionally, scramble IC will destroy the data under its care rather than 
+letting it fall into unauthorized hands. If the decker tries to decrypt scramble 
+IC and fails, the gamemaster makes a Scramble Test using its Rating against a 
+target number equal to the decker's Computer Skill. If the test fails, the decker 
+has managed to suppress the scramble IC's destruct code. If the test succeeds, 
+the data is destroyed. Deckers may use specific system operations to defeat 
+scramble IC, all of which can be augmented by the decryption utility program 
+(see System Operations, p. 214). Decrypting scramble IC does not add to the 
+decker's security tally. Deckers can use attack programs to crash scramble IC, 
+but doing so will increase the decker's security tally unless he suppresses 
+the scramble IC.`,
         
         "Security Decker(s)":"",
         
@@ -127,7 +193,8 @@ Trap doors can be particularly nasty when combined with
 chokepoints, because they force the decker to pass through
 various subsystems (which can be loaded with security 
 measures) to find the trap door.`,
-        "Virtual Host":`A virtual machine (VM) is a “simulated host”—actually a
+        
+    "Virtual Host":`A virtual machine (VM) is a “simulated host”—actually a
 subprogram run by a real host. The VM's virtual environment is
 essentially an encapsulated space within the real host itself. For
 all intents and purposes, the VM acts like the real host, so a user
@@ -153,12 +220,22 @@ transferred out, however, the VM intervenes in the transfer
 and overwrites the files with meaningless garbage. When
 the file is read later, it will be useless.`
     }
+
+
+    let optionsDescription = "";
+    let extraDescription = "";
+    if(typeof props.options === "object"){
+        optionsDescription = " ("+props.options.type+" - "+props.options.rating+")";
+        extraDescription = props.options.extra;
+    }else{
+        optionsDescription = props.options;
+    }
 return (
     <div className='mb-2'>
-        <Button className="NastySurpriseButton" variant="primary" onClick={handleShow}>{props.type} {props.option}</Button>
+        <Button className="SurpriseButton" variant="primary" onClick={handleShow}>{props.type +' '+optionsDescription + ' '+ extraDescription}</Button>
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>{props.type} {props.option}</Modal.Title>
+                <Modal.Title>{props.type +' '+optionsDescription}</Modal.Title>
             </Modal.Header>
             <Modal.Body><pre>{NastySurpriseTypes[props.type]}</pre></Modal.Body>
             <Modal.Footer>
