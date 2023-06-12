@@ -12,7 +12,27 @@ import PayData from './PayData.js';
 import NastySurprise from './NastySurprise.js'
 
 const SecuritySheaf = (props) => {
+
+    function shuffle(array) {
+        let currentIndex = array.length,  randomIndex;
+      
+        // While there remain elements to shuffle.
+        while (currentIndex !== 0) {
+      
+          // Pick a remaining element.
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+      
+          // And swap it with the current element.
+          [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+        }
+      
+        return array;
+      }
+
     const [sheafCode, setSheafCode] = useState('blue');
+    const [sheafWeight, setSheafWeight] = useState('none');
     const [sheafDifficulty, setSheafDifficulty] = useState('easy');
     const [sheafDisplay, setSheafDisplay] = useState('');
     const PaydataCheck = createRef();
@@ -387,39 +407,258 @@ const SecuritySheaf = (props) => {
         let secValue = 0;
         NastySurprisesTemp = [];
         EventListTemp = [];
-
+        console.log('Generating an '+sheafDifficulty+ ' weighted to '+sheafWeight);
         if (sheafDifficulty === "easy") {
             secValue = Dice(1,3,3);
             SecurityValue.current = secValue;
-            AccessValue     = Dice(1,3,7).toString();
-            ControlValue    = Dice(1,3,7).toString();
-            IndexValue      = Dice(1,3,7).toString();
-            FilesValue      = Dice(1,3,7).toString();
-            SlaveValue      = Dice(1,3,7).toString();
-            SecuritySheafOutput += sheafCode + "-" + secValue.toString() + "/" + Dice(1,3,7).toString() + "/" + Dice(1,3,7).toString() + "/" + Dice(1,3,7).toString() + "/" + Dice(1,3,7).toString() + "/" + Dice(1,3,7).toString() + "\n";
+
+            if(sheafWeight === 'none'){
+                AccessValue     = Dice(1,3,7).toString();
+                ControlValue    = Dice(1,3,7).toString();
+                IndexValue      = Dice(1,3,7).toString();
+                FilesValue      = Dice(1,3,7).toString();
+                SlaveValue      = Dice(1,3,7).toString()
+            }else if(sheafWeight === 'access'){
+                let tmpValues = [
+                    Dice(1,3,7),
+                    Dice(1,3,7),
+                    Dice(1,3,7),
+                    Dice(1,3,7),
+                    Dice(1,3,7)
+                ]
+                tmpValues.sort().reverse();
+                AccessValue     = tmpValues.shift();
+                ControlValue    = shuffle(tmpValues).shift();
+                IndexValue      = shuffle(tmpValues).shift();
+                FilesValue      = shuffle(tmpValues).shift();
+                SlaveValue      = shuffle(tmpValues).shift();
+            }else if(sheafWeight === 'control'){
+                let tmpValues = [
+                    Dice(1,3,7),
+                    Dice(1,3,7),
+                    Dice(1,3,7),
+                    Dice(1,3,7),
+                    Dice(1,3,7)
+                ]
+                tmpValues.sort().reverse();
+                ControlValue    = tmpValues.shift();
+                AccessValue     = shuffle(tmpValues).shift();
+                IndexValue      = shuffle(tmpValues).shift();
+                FilesValue      = shuffle(tmpValues).shift();
+                SlaveValue      = shuffle(tmpValues).shift();
+            }else if(sheafWeight === 'index'){
+                let tmpValues = [
+                    Dice(1,3,7),
+                    Dice(1,3,7),
+                    Dice(1,3,7),
+                    Dice(1,3,7),
+                    Dice(1,3,7)
+                ]
+                tmpValues.sort().reverse();
+                IndexValue      = tmpValues.shift();
+                AccessValue     = shuffle(tmpValues).shift();
+                ControlValue    = shuffle(tmpValues).shift();
+                FilesValue      = shuffle(tmpValues).shift();
+                SlaveValue      = shuffle(tmpValues).shift();
+            }else if(sheafWeight === 'files'){
+                let tmpValues = [
+                    Dice(1,3,7),
+                    Dice(1,3,7),
+                    Dice(1,3,7),
+                    Dice(1,3,7),
+                    Dice(1,3,7)
+                ]
+                tmpValues.sort().reverse();
+                FilesValue      = tmpValues.shift(); 
+                AccessValue     = shuffle(tmpValues).shift();
+                ControlValue    = shuffle(tmpValues).shift();
+                IndexValue      = shuffle(tmpValues).shift();
+                SlaveValue      = shuffle(tmpValues).shift();
+            }else if(sheafWeight === 'slave'){
+                let tmpValues = [
+                    Dice(1,3,7),
+                    Dice(1,3,7),
+                    Dice(1,3,7),
+                    Dice(1,3,7),
+                    Dice(1,3,7)
+                ]
+                tmpValues.sort().reverse();
+                console.log(tmpValues);
+                SlaveValue      = tmpValues.shift(); 
+                AccessValue     = shuffle(tmpValues).shift();
+                ControlValue    = shuffle(tmpValues).shift();
+                IndexValue      = shuffle(tmpValues).shift();
+                FilesValue      = shuffle(tmpValues).shift();
+            }
+
         }
 
         if (sheafDifficulty === "average") {
             secValue = Dice(1,3,6);
             SecurityValue.current = secValue;
-            AccessValue     = Dice(2,3,9).toString();
-            ControlValue    = Dice(2,3,9).toString();
-            IndexValue      = Dice(2,3,9).toString();
-            FilesValue      = Dice(2,3,9).toString();
-            SlaveValue      = Dice(2,3,9).toString();
-            SecuritySheafOutput += sheafCode + "-" + secValue.toString() + "/" + Dice(2,3,9).toString() + "/" + Dice(2,3,9).toString() + "/" + Dice(2,3,9).toString() + "/" + Dice(2,3,9).toString() + "/" + Dice(2,3,9).toString() + "\n";
+            if(sheafWeight === 'none'){
+                AccessValue     = Dice(2,3,9).toString();
+                ControlValue    = Dice(2,3,9).toString();
+                IndexValue      = Dice(2,3,9).toString();
+                FilesValue      = Dice(2,3,9).toString();
+                SlaveValue      = Dice(2,3,9).toString();
+            }else if(sheafWeight === 'access'){
+                let tmpValues = [
+                    Dice(2,3,9),
+                    Dice(2,3,9),
+                    Dice(2,3,9),
+                    Dice(2,3,9),
+                    Dice(2,3,9)
+                ]
+                tmpValues.sort().reverse();
+                console.log(tmpValues)
+                AccessValue     = tmpValues.shift();
+                ControlValue    = shuffle(tmpValues).shift();
+                IndexValue      = shuffle(tmpValues).shift();
+                FilesValue      = shuffle(tmpValues).shift();
+                SlaveValue      = shuffle(tmpValues).shift();
+            }else if(sheafWeight === 'control'){
+                let tmpValues = [
+                    Dice(2,3,9),
+                    Dice(2,3,9),
+                    Dice(2,3,9),
+                    Dice(2,3,9),
+                    Dice(2,3,9)
+                ]
+                tmpValues.sort().reverse();
+                ControlValue    = tmpValues.shift();
+                AccessValue     = shuffle(tmpValues).shift();
+                IndexValue      = shuffle(tmpValues).shift();
+                FilesValue      = shuffle(tmpValues).shift();
+                SlaveValue      = shuffle(tmpValues).shift();
+            }else if(sheafWeight === 'index'){
+                let tmpValues = [
+                    Dice(2,3,9),
+                    Dice(2,3,9),
+                    Dice(2,3,9),
+                    Dice(2,3,9),
+                    Dice(2,3,9)
+                ]
+                tmpValues.sort().reverse();
+                IndexValue      = tmpValues.shift();
+                AccessValue     = shuffle(tmpValues).shift();
+                ControlValue    = shuffle(tmpValues).shift();
+                FilesValue      = shuffle(tmpValues).shift();
+                SlaveValue      = shuffle(tmpValues).shift();
+            }else if(sheafWeight === 'files'){
+                let tmpValues = [
+                    Dice(2,3,9),
+                    Dice(2,3,9),
+                    Dice(2,3,9),
+                    Dice(2,3,9),
+                    Dice(2,3,9)
+                ]
+                tmpValues.sort().reverse();
+                FilesValue      = tmpValues.shift(); 
+                AccessValue     = shuffle(tmpValues).shift();
+                ControlValue    = shuffle(tmpValues).shift();
+                IndexValue      = shuffle(tmpValues).shift();
+                SlaveValue      = shuffle(tmpValues).shift();
+            }else if(sheafWeight === 'slave'){
+                let tmpValues = [
+                    Dice(2,3,9),
+                    Dice(2,3,9),
+                    Dice(2,3,9),
+                    Dice(2,3,9),
+                    Dice(2,3,9)
+                ]
+                tmpValues.sort().reverse();
+                console.log(tmpValues);
+                SlaveValue      = tmpValues.shift(); 
+                AccessValue     = shuffle(tmpValues).shift();
+                ControlValue    = shuffle(tmpValues).shift();
+                IndexValue      = shuffle(tmpValues).shift();
+                FilesValue      = shuffle(tmpValues).shift();
+            }
         }
 
         if (sheafDifficulty === "hard") {
             secValue = Dice(2,3,6);
             SecurityValue.current = secValue;
-            AccessValue     = Dice(1,6,12).toString();
-            ControlValue    = Dice(1,6,12).toString();
-            IndexValue      = Dice(1,6,12).toString();
-            FilesValue      = Dice(1,6,12).toString();
-            SlaveValue      = Dice(1,6,12).toString();
-            SecuritySheafOutput += sheafCode + "-" + secValue.toString() + "/" + Dice(1,6,12).toString() + "/" + Dice(1,6,12).toString() + "/" + Dice(1,6,12).toString() + "/" + Dice(1,6,12).toString() + "/" + Dice(1,6,12).toString() + "\n";
+            if(sheafWeight === 'none'){
+                AccessValue     = Dice(1,6,12).toString();
+                ControlValue    = Dice(1,6,12).toString();
+                IndexValue      = Dice(1,6,12).toString();
+                FilesValue      = Dice(1,6,12).toString();
+                SlaveValue      = Dice(1,6,12).toString();
+            }else if(sheafWeight === 'access'){
+                let tmpValues = [
+                    Dice(1,6,12),
+                    Dice(1,6,12),
+                    Dice(1,6,12),
+                    Dice(1,6,12),
+                    Dice(1,6,12)
+                ]
+                tmpValues.sort().reverse();
+                AccessValue     = tmpValues.shift();
+                ControlValue    = shuffle(tmpValues).shift();
+                IndexValue      = shuffle(tmpValues).shift();
+                FilesValue      = shuffle(tmpValues).shift();
+                SlaveValue      = shuffle(tmpValues).shift();
+            }else if(sheafWeight === 'control'){
+                let tmpValues = [
+                    Dice(1,6,12),
+                    Dice(1,6,12),
+                    Dice(1,6,12),
+                    Dice(1,6,12),
+                    Dice(1,6,12)
+                ]
+                tmpValues.sort().reverse();
+                ControlValue    = tmpValues.shift();
+                AccessValue     = shuffle(tmpValues).shift();
+                IndexValue      = shuffle(tmpValues).shift();
+                FilesValue      = shuffle(tmpValues).shift();
+                SlaveValue      = shuffle(tmpValues).shift();
+            }else if(sheafWeight === 'index'){
+                let tmpValues = [
+                    Dice(1,6,12),
+                    Dice(1,6,12),
+                    Dice(1,6,12),
+                    Dice(1,6,12),
+                    Dice(1,6,12)
+                ]
+                tmpValues.sort().reverse();
+                IndexValue      = tmpValues.shift();
+                AccessValue     = shuffle(tmpValues).shift();
+                ControlValue    = shuffle(tmpValues).shift();
+                FilesValue      = shuffle(tmpValues).shift();
+                SlaveValue      = shuffle(tmpValues).shift();
+            }else if(sheafWeight === 'files'){
+                let tmpValues = [
+                    Dice(1,6,12),
+                    Dice(1,6,12),
+                    Dice(1,6,12),
+                    Dice(1,6,12),
+                    Dice(1,6,12)
+                ]
+                tmpValues.sort().reverse();
+                FilesValue      = tmpValues.shift(); 
+                AccessValue     = shuffle(tmpValues).shift();
+                ControlValue    = shuffle(tmpValues).shift();
+                IndexValue      = shuffle(tmpValues).shift();
+                SlaveValue      = shuffle(tmpValues).shift();
+            }else if(sheafWeight === 'slave'){
+                let tmpValues = [
+                    Dice(1,6,12),
+                    Dice(1,6,12),
+                    Dice(1,6,12),
+                    Dice(1,6,12),
+                    Dice(1,6,12)
+                ]
+                tmpValues.sort().reverse();
+                SlaveValue      = tmpValues.shift(); 
+                AccessValue     = shuffle(tmpValues).shift();
+                ControlValue    = shuffle(tmpValues).shift();
+                IndexValue      = shuffle(tmpValues).shift();
+                FilesValue      = shuffle(tmpValues).shift();
+            }
         }
+        SecuritySheafOutput += sheafCode + "-" + secValue.toString() + "/" + AccessValue + "/" + ControlValue + "/" + IndexValue + "/" + FilesValue + "/" + SlaveValue + "\n";
         setSheafDisplay(sheafCode.toUpperCase() + "-" + secValue.toString() + ' (ACIFS) ' +AccessValue+ "/" +ControlValue+ "/" +IndexValue+ "/" +FilesValue+ "/" +SlaveValue  );
         
         if(sheafCode === "blue")  { StepModifier = 4 }
@@ -526,6 +765,11 @@ const SecuritySheaf = (props) => {
         setSheafDifficulty(event.target.value);
     }
 
+    const onChangeSheafWeight = (event) =>{
+        setSheafWeight(event.target.value);
+    }
+    
+
     return (
     <Container id='SheafContainer'>
         <Row>
@@ -534,6 +778,39 @@ const SecuritySheaf = (props) => {
         <Row>
             <div className='col-md-6 col-xs-12' >
                 <Form className='align-left'>
+                    <div onChange={onChangeSheafWeight}>
+                        <h2>System Weight</h2>
+                        <div className="form-check">
+                            <label className="form-check-label">None
+                                <input className="form-check-input" type="radio" aria-label="None" value='none' name="sheafWeight" defaultChecked />
+                            </label>
+                        </div>
+                        <div className="form-check">
+                            <label className="form-check-label">Access
+                                <input className="form-check-input" type="radio" aria-label="Access" value='access' name="sheafWeight" />
+                            </label>
+                        </div>
+                        <div className="form-check">
+                            <label className="form-check-label">Control 
+                                <input className="form-check-input" type="radio" aria-label="Control" value='control' name="sheafWeight" />
+                            </label>
+                        </div>
+                        <div className="form-check">
+                            <label className="form-check-label">Index
+                                <input className="form-check-input" type="radio" aria-label="Index" value="index" name="sheafWeight"/>
+                            </label>
+                        </div>
+                        <div className="form-check">
+                            <label className="form-check-label">Files
+                                <input className="form-check-input" type="radio" aria-label="Files" value="files" name="sheafWeight"/>
+                            </label>
+                        </div>
+                        <div className="form-check">
+                            <label className="form-check-label">Slave
+                                <input className="form-check-input" type="radio" aria-label="Slave" value='slave' name="sheafWeight"/>
+                            </label>
+                        </div>
+                    </div>
                     <div onChange={onChangeSheafCode}> 
                         <h2>System Color</h2>
                         <div className="form-check">
@@ -543,7 +820,7 @@ const SecuritySheaf = (props) => {
                         </div>
                         <div className="form-check">
                             <label className="form-check-label">Green
-                                <input className="form-check-input" type="radio" value='green' name="sheafCode" />
+                                <input className="form-check-input" type="radio" aria-label="Green"  value='green' name="sheafCode" />
                             </label>
                         </div>
                         <div className="form-check">
