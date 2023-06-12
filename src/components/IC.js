@@ -1,11 +1,13 @@
 import React,{ useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import Badge from 'react-bootstrap/Badge';
 import './IC.css';
 const IC = (props) => {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true); 
+    const handleShow = () => setShow(true);
+    //const [ICActive, setICActive] = useState('inactive'); 
 
     const OptionsDescription = {
         "Shielding":"Shielding -- The shield option makes it more difficult for attacking utilities to cause damage. Shield adds a +2 target modifier to all tests to hit the protected IC in cybercombat.",
@@ -163,10 +165,23 @@ const IC = (props) => {
         }
     }
 
+    const handleActiveToggle = (options) => {
+        options.stopPropagation();
+        if(options.target.innerText === "Inactive"){
+            options.target.innerText = "Active";
+            options.target.classList.remove('bg-secondary');
+            options.target.classList.add('bg-danger');
+        }else{
+            options.target.innerText = "Inactive";
+            options.target.classList.remove('bg-danger');
+            options.target.classList.add('bg-secondary');
+        }
+    }
+
 
 return (
     <div className='mb-2'>
-        <Button className="ICButton" variant="primary" onClick={handleShow}>{props.ICStep}: {props.ICName + ' - '+ props.ICRating + hasSubType(props.ICSubType) + hasOptions(props.ICOptions) }</Button>
+        <Button className="ICButton" variant="primary" onClick={handleShow}>{props.ICStep}: {props.ICName + ' - '+ props.ICRating + hasSubType(props.ICSubType) + hasOptions(props.ICOptions) }<Badge onClick={handleActiveToggle} style={{"left":"5px"}} pill bg='secondary'>Inactive</Badge></Button>
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title>{props.ICName + ' - '+ props.ICRating + hasSubType(props.ICSubType) + hasOptions(props.ICOptions)}</Modal.Title>
