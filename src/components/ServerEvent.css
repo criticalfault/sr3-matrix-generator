@@ -1,3 +1,16 @@
-.ServerEventButton{
-    width: 320px;
+.Alert{
+    width: 400px;
+}
+.Passive{
+    background-color: yellow;
+    color:black;
+}
+
+.Active{
+    background-color:red;
+}
+
+.Shutdown{
+    background-color:black;
+    width: 400px;
 }

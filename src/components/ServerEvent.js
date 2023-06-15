@@ -74,7 +74,7 @@ operations terminate as well.`
     }
 return (
     <div className='mb-2'>
-        <Button className="ServerEventButton" variant="primary" onClick={handleShow}>{props.ICStep}: {props.EventName}</Button>
+        <Button variant="primary" className={props.EventName} onClick={handleShow}>{props.ICStep}: {props.EventName}</Button>
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title>{props.EventName}</Modal.Title>
