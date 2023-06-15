@@ -6,11 +6,12 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Accordion from 'react-bootstrap/Accordion';
 import IC from './IC.js';
 import ServerEvent from './ServerEvent';
 import PayData from './PayData.js';
 import NastySurprise from './NastySurprise.js'
-
+import ConditionMonitor from './ConditionMonitor.js';
 const SecuritySheaf = (props) => {
 
     function shuffle(array) {
@@ -43,6 +44,7 @@ const SecuritySheaf = (props) => {
     const [EventList, setEventList] = useState([]);
     const [SystemSurprise, setSystemSurprise] = useState([]);
     const [PayDataList, setPayDataList] = useState([]);
+    const [MasterSecuritySheafOutput, setMasterSecuritySheafOutput] = useState('');
     
     const CombatStats = {
         "blue":  { "Legitimate":3, "Intruding":6, "ICDamage":"Moderate", "DumpShock":"Light",    "ICInit":"1d6+Rating", "ConstructHackingPool":0, "CascadeIncrease":"1"         },
@@ -149,7 +151,7 @@ const SecuritySheaf = (props) => {
         let options = ReactiveOptions();
         let ICOptions = ReactiveOptions();
         EventListTemp.push({"type":"IC", "ICStep":ICStep, "ICSubType":ICSubType, "ICRating":ICRating, "ICName":ICName, "ICExtra":ICExtra, "ICOptions":ICOptions});
-        return I + ICExtra + options;
+        return I+ICExtra+' '+options;
     }
     
     const ProactiveGray = (ICStep) => {
@@ -166,7 +168,7 @@ const SecuritySheaf = (props) => {
         let options = ProactiveOptions();
         let ICOptions = ProactiveOptions();
         EventListTemp.push({"type":"IC", "ICStep":ICStep, "ICSubType":ICSubType, "ICRating":ICRating, "ICName":ICName, "ICExtra":ICExtra, "ICOptions":ICOptions });
-        return I + ICExtra + options
+        return I+ICExtra+' '+options;
     }
     
     const Black = (ICStep) => {
@@ -190,7 +192,7 @@ const SecuritySheaf = (props) => {
         let ICRating = generateICRating();
         let ICExtra = "-" + ICRating;
         EventListTemp.push({"type":"IC", "ICStep":ICStep, "ICSubType":ICSubType, "ICRating":ICRating, "ICName":ICName, "ICExtra":ICExtra, "ICOptions":ICOptions});
-        return I + ICExtra;
+        return I+ICExtra;
     }
     
     const TrapIC = () => {
@@ -407,82 +409,59 @@ const SecuritySheaf = (props) => {
         let secValue = 0;
         NastySurprisesTemp = [];
         EventListTemp = [];
-        console.log('Generating an '+sheafDifficulty+ ' weighted to '+sheafWeight);
         if (sheafDifficulty === "easy") {
             secValue = Dice(1,3,3);
             SecurityValue.current = secValue;
-
+            let tmpValues = [
+                Dice(1,3,7),
+                Dice(1,3,7),
+                Dice(1,3,7),
+                Dice(1,3,7),
+                Dice(1,3,7)
+            ]
+            tmpValues.sort().reverse();
             if(sheafWeight === 'none'){
-                AccessValue     = Dice(1,3,7).toString();
-                ControlValue    = Dice(1,3,7).toString();
-                IndexValue      = Dice(1,3,7).toString();
-                FilesValue      = Dice(1,3,7).toString();
-                SlaveValue      = Dice(1,3,7).toString()
+                console.log("Easy - Not Weighted");
+                console.log(tmpValues);
+                AccessValue     = shuffle(tmpValues).shift();
+                ControlValue    = shuffle(tmpValues).shift();
+                IndexValue      = shuffle(tmpValues).shift();
+                FilesValue      = shuffle(tmpValues).shift();
+                SlaveValue      = shuffle(tmpValues).shift();
             }else if(sheafWeight === 'access'){
-                let tmpValues = [
-                    Dice(1,3,7),
-                    Dice(1,3,7),
-                    Dice(1,3,7),
-                    Dice(1,3,7),
-                    Dice(1,3,7)
-                ]
-                tmpValues.sort().reverse();
+                console.log("Easy - Access Weighted");
+                console.log(tmpValues);
                 AccessValue     = tmpValues.shift();
                 ControlValue    = shuffle(tmpValues).shift();
                 IndexValue      = shuffle(tmpValues).shift();
                 FilesValue      = shuffle(tmpValues).shift();
                 SlaveValue      = shuffle(tmpValues).shift();
             }else if(sheafWeight === 'control'){
-                let tmpValues = [
-                    Dice(1,3,7),
-                    Dice(1,3,7),
-                    Dice(1,3,7),
-                    Dice(1,3,7),
-                    Dice(1,3,7)
-                ]
-                tmpValues.sort().reverse();
+                console.log("Easy - Control Weighted");
+                console.log(tmpValues);
                 ControlValue    = tmpValues.shift();
                 AccessValue     = shuffle(tmpValues).shift();
                 IndexValue      = shuffle(tmpValues).shift();
                 FilesValue      = shuffle(tmpValues).shift();
                 SlaveValue      = shuffle(tmpValues).shift();
             }else if(sheafWeight === 'index'){
-                let tmpValues = [
-                    Dice(1,3,7),
-                    Dice(1,3,7),
-                    Dice(1,3,7),
-                    Dice(1,3,7),
-                    Dice(1,3,7)
-                ]
-                tmpValues.sort().reverse();
+                console.log("Easy - Index Weighted");
+                console.log(tmpValues);
                 IndexValue      = tmpValues.shift();
                 AccessValue     = shuffle(tmpValues).shift();
                 ControlValue    = shuffle(tmpValues).shift();
                 FilesValue      = shuffle(tmpValues).shift();
                 SlaveValue      = shuffle(tmpValues).shift();
             }else if(sheafWeight === 'files'){
-                let tmpValues = [
-                    Dice(1,3,7),
-                    Dice(1,3,7),
-                    Dice(1,3,7),
-                    Dice(1,3,7),
-                    Dice(1,3,7)
-                ]
-                tmpValues.sort().reverse();
+                console.log("Easy - Files Weighted");
+                console.log(tmpValues);
                 FilesValue      = tmpValues.shift(); 
                 AccessValue     = shuffle(tmpValues).shift();
                 ControlValue    = shuffle(tmpValues).shift();
                 IndexValue      = shuffle(tmpValues).shift();
                 SlaveValue      = shuffle(tmpValues).shift();
             }else if(sheafWeight === 'slave'){
-                let tmpValues = [
-                    Dice(1,3,7),
-                    Dice(1,3,7),
-                    Dice(1,3,7),
-                    Dice(1,3,7),
-                    Dice(1,3,7)
-                ]
-                tmpValues.sort().reverse();
+                console.log("Easy - Slave Weighted");
                 console.log(tmpValues);
                 SlaveValue      = tmpValues.shift(); 
                 AccessValue     = shuffle(tmpValues).shift();
@@ -496,78 +475,55 @@ const SecuritySheaf = (props) => {
         if (sheafDifficulty === "average") {
             secValue = Dice(1,3,6);
             SecurityValue.current = secValue;
+            let tmpValues = [
+                Dice(2,3,9),
+                Dice(2,3,9),
+                Dice(2,3,9),
+                Dice(2,3,9),
+                Dice(2,3,9)
+            ]
+            tmpValues.sort().reverse();
             if(sheafWeight === 'none'){
-                AccessValue     = Dice(2,3,9).toString();
-                ControlValue    = Dice(2,3,9).toString();
-                IndexValue      = Dice(2,3,9).toString();
-                FilesValue      = Dice(2,3,9).toString();
-                SlaveValue      = Dice(2,3,9).toString();
+                console.log("Average - Nonweighted");
+                AccessValue     = shuffle(tmpValues).shift();
+                ControlValue    = shuffle(tmpValues).shift();
+                IndexValue      = shuffle(tmpValues).shift();
+                FilesValue      = shuffle(tmpValues).shift();
+                SlaveValue      = shuffle(tmpValues).shift();
             }else if(sheafWeight === 'access'){
-                let tmpValues = [
-                    Dice(2,3,9),
-                    Dice(2,3,9),
-                    Dice(2,3,9),
-                    Dice(2,3,9),
-                    Dice(2,3,9)
-                ]
-                tmpValues.sort().reverse();
-                console.log(tmpValues)
+                console.log("Average - Access Weighted");
+                console.log(tmpValues);
                 AccessValue     = tmpValues.shift();
                 ControlValue    = shuffle(tmpValues).shift();
                 IndexValue      = shuffle(tmpValues).shift();
                 FilesValue      = shuffle(tmpValues).shift();
                 SlaveValue      = shuffle(tmpValues).shift();
             }else if(sheafWeight === 'control'){
-                let tmpValues = [
-                    Dice(2,3,9),
-                    Dice(2,3,9),
-                    Dice(2,3,9),
-                    Dice(2,3,9),
-                    Dice(2,3,9)
-                ]
-                tmpValues.sort().reverse();
-                ControlValue    = tmpValues.shift();
+                console.log("Average - Control Weighted");
+                console.log(tmpValues);
+                ControlValue      = tmpValues.shift();
                 AccessValue     = shuffle(tmpValues).shift();
                 IndexValue      = shuffle(tmpValues).shift();
                 FilesValue      = shuffle(tmpValues).shift();
                 SlaveValue      = shuffle(tmpValues).shift();
             }else if(sheafWeight === 'index'){
-                let tmpValues = [
-                    Dice(2,3,9),
-                    Dice(2,3,9),
-                    Dice(2,3,9),
-                    Dice(2,3,9),
-                    Dice(2,3,9)
-                ]
-                tmpValues.sort().reverse();
+                console.log("Average - Index Weighted");
+                console.log(tmpValues);
                 IndexValue      = tmpValues.shift();
                 AccessValue     = shuffle(tmpValues).shift();
                 ControlValue    = shuffle(tmpValues).shift();
                 FilesValue      = shuffle(tmpValues).shift();
                 SlaveValue      = shuffle(tmpValues).shift();
             }else if(sheafWeight === 'files'){
-                let tmpValues = [
-                    Dice(2,3,9),
-                    Dice(2,3,9),
-                    Dice(2,3,9),
-                    Dice(2,3,9),
-                    Dice(2,3,9)
-                ]
-                tmpValues.sort().reverse();
+                console.log("Average - Files Weighted");
+                console.log(tmpValues);
                 FilesValue      = tmpValues.shift(); 
                 AccessValue     = shuffle(tmpValues).shift();
                 ControlValue    = shuffle(tmpValues).shift();
                 IndexValue      = shuffle(tmpValues).shift();
                 SlaveValue      = shuffle(tmpValues).shift();
             }else if(sheafWeight === 'slave'){
-                let tmpValues = [
-                    Dice(2,3,9),
-                    Dice(2,3,9),
-                    Dice(2,3,9),
-                    Dice(2,3,9),
-                    Dice(2,3,9)
-                ]
-                tmpValues.sort().reverse();
+                console.log("Average - Slave Weighted");
                 console.log(tmpValues);
                 SlaveValue      = tmpValues.shift(); 
                 AccessValue     = shuffle(tmpValues).shift();
@@ -580,77 +536,57 @@ const SecuritySheaf = (props) => {
         if (sheafDifficulty === "hard") {
             secValue = Dice(2,3,6);
             SecurityValue.current = secValue;
+            let tmpValues = [
+                Dice(1,6,12),
+                Dice(1,6,12),
+                Dice(1,6,12),
+                Dice(1,6,12),
+                Dice(1,6,12)
+            ]
+            tmpValues.sort().reverse();
             if(sheafWeight === 'none'){
-                AccessValue     = Dice(1,6,12).toString();
-                ControlValue    = Dice(1,6,12).toString();
-                IndexValue      = Dice(1,6,12).toString();
-                FilesValue      = Dice(1,6,12).toString();
-                SlaveValue      = Dice(1,6,12).toString();
+                console.log("Hard - Not Weighted");
+                console.log(tmpValues);
+                AccessValue     = shuffle(tmpValues).shift();
+                ControlValue    = shuffle(tmpValues).shift();
+                IndexValue      = shuffle(tmpValues).shift();
+                FilesValue      = shuffle(tmpValues).shift();
+                SlaveValue      = shuffle(tmpValues).shift();
             }else if(sheafWeight === 'access'){
-                let tmpValues = [
-                    Dice(1,6,12),
-                    Dice(1,6,12),
-                    Dice(1,6,12),
-                    Dice(1,6,12),
-                    Dice(1,6,12)
-                ]
-                tmpValues.sort().reverse();
+                console.log("Hard - Access Weighted");
+                console.log(tmpValues);
                 AccessValue     = tmpValues.shift();
                 ControlValue    = shuffle(tmpValues).shift();
                 IndexValue      = shuffle(tmpValues).shift();
                 FilesValue      = shuffle(tmpValues).shift();
                 SlaveValue      = shuffle(tmpValues).shift();
             }else if(sheafWeight === 'control'){
-                let tmpValues = [
-                    Dice(1,6,12),
-                    Dice(1,6,12),
-                    Dice(1,6,12),
-                    Dice(1,6,12),
-                    Dice(1,6,12)
-                ]
-                tmpValues.sort().reverse();
+                console.log("Hard - Control Weighted");
+                console.log(tmpValues);
                 ControlValue    = tmpValues.shift();
                 AccessValue     = shuffle(tmpValues).shift();
                 IndexValue      = shuffle(tmpValues).shift();
                 FilesValue      = shuffle(tmpValues).shift();
                 SlaveValue      = shuffle(tmpValues).shift();
             }else if(sheafWeight === 'index'){
-                let tmpValues = [
-                    Dice(1,6,12),
-                    Dice(1,6,12),
-                    Dice(1,6,12),
-                    Dice(1,6,12),
-                    Dice(1,6,12)
-                ]
-                tmpValues.sort().reverse();
+                console.log("Hard - Index Weighted");
+                console.log(tmpValues);
                 IndexValue      = tmpValues.shift();
                 AccessValue     = shuffle(tmpValues).shift();
                 ControlValue    = shuffle(tmpValues).shift();
                 FilesValue      = shuffle(tmpValues).shift();
                 SlaveValue      = shuffle(tmpValues).shift();
             }else if(sheafWeight === 'files'){
-                let tmpValues = [
-                    Dice(1,6,12),
-                    Dice(1,6,12),
-                    Dice(1,6,12),
-                    Dice(1,6,12),
-                    Dice(1,6,12)
-                ]
-                tmpValues.sort().reverse();
+                console.log("Hard - Files Weighted");
+                console.log(tmpValues);
                 FilesValue      = tmpValues.shift(); 
                 AccessValue     = shuffle(tmpValues).shift();
                 ControlValue    = shuffle(tmpValues).shift();
                 IndexValue      = shuffle(tmpValues).shift();
                 SlaveValue      = shuffle(tmpValues).shift();
             }else if(sheafWeight === 'slave'){
-                let tmpValues = [
-                    Dice(1,6,12),
-                    Dice(1,6,12),
-                    Dice(1,6,12),
-                    Dice(1,6,12),
-                    Dice(1,6,12)
-                ]
-                tmpValues.sort().reverse();
+                console.log("Hard - Slave Weighted");
+                console.log(tmpValues);
                 SlaveValue      = tmpValues.shift(); 
                 AccessValue     = shuffle(tmpValues).shift();
                 ControlValue    = shuffle(tmpValues).shift();
@@ -752,9 +688,9 @@ const SecuritySheaf = (props) => {
         // Generate paydata
         if (PaydataCheck.current.checked === true){
             SecuritySheafOutput += "\n\n" + PayDataGenerate(sheafCode);
-            console.log(SecuritySheafOutput);
         }
         setEventList(EventListTemp);
+        setMasterSecuritySheafOutput(SecuritySheafOutput);
     }
 
     const onChangeSheafCode = (event) =>{
@@ -889,6 +825,16 @@ const SecuritySheaf = (props) => {
                     <Col className="col-md-4 col-xs-12">IC&nbsp;Init: {CombatStats[sheafCode].ICInit}</Col>
                     <Col className="col-md-4 col-xs-12">DumpShock: {CombatStats[sheafCode].DumpShock}</Col>
                 </Row>
+                {/* <Accordion defaultActiveKey="1" className='CombatStats'>
+                    <Accordion.Item eventKey="0">
+                        <Accordion.Header>System Copy Field</Accordion.Header>
+                        <Accordion.Body>
+                        <pre>
+                            {MasterSecuritySheafOutput}
+                        </pre>
+                    </Accordion.Body>
+                    </Accordion.Item>
+                </Accordion> */}
             </div>
             <div className='col-md-6 col-xs-12' >
                 <Row>
@@ -903,13 +849,20 @@ const SecuritySheaf = (props) => {
                     {
                         EventList.map((item,index) => {   
                             if(item.type === 'IC'){
-                                return (<IC ICStep={item.ICStep} ICName={item.ICName} ICSubType={item.ICSubType} ICExtra={item.ICExtra} ICOptions={item.ICOptions} ICRating={item.ICRating} key={index}/>)
+                                return (<Row> 
+                                            <IC ICStep={item.ICStep} ICName={item.ICName} ICSubType={item.ICSubType} ICExtra={item.ICExtra} ICOptions={item.ICOptions} ICRating={item.ICRating} key={index}/>
+                                            <ConditionMonitor key={'CM'+index}/>
+                                            <hr></hr>
+                                        </Row>
+                                        )
                             }else{
-                                return (<ServerEvent ICStep={item.ICStep} EventName={item.EventName} EventDescription={item.EventName} key={index}/>)
+                                return (<Row> 
+                                            <ServerEvent ICStep={item.ICStep} EventName={item.EventName} EventDescription={item.EventName} key={index}/>
+                                            <hr></hr>
+                                        </Row>)
                             }
                         })
-                    }
-                    <hr></hr>         
+                    }      
                     {
                         PayDataList.map((item,index) => <PayData key={index} size={item.size} protected={item.protected} defType={item.defType} defRating={item.defRating} description={item.description}/> )
                     }

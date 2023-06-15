@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="App">
       <Container>
-        <SecuritySheaf/>
+        <SecuritySheaf key={1}/>
       </Container>
     </div>
   );

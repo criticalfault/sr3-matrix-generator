@@ -7,7 +7,6 @@ const IC = (props) => {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    //const [ICActive, setICActive] = useState('inactive'); 
 
     const OptionsDescription = {
         "Shielding":"Shielding -- The shield option makes it more difficult for attacking utilities to cause damage. Shield adds a +2 target modifier to all tests to hit the protected IC in cybercombat.",
@@ -171,9 +170,17 @@ const IC = (props) => {
             options.target.innerText = "Active";
             options.target.classList.remove('bg-secondary');
             options.target.classList.add('bg-danger');
-        }else{
-            options.target.innerText = "Inactive";
+        }else if(options.target.innerText === "Active"){
+            options.target.innerText = "Crashed";
             options.target.classList.remove('bg-danger');
+            options.target.classList.add('bg-warning');
+        }else if(options.target.innerText === "Crashed"){
+            options.target.innerText = "Suppressed";
+            options.target.classList.remove('bg-warning');
+            options.target.classList.add('bg-success');
+        }else if(options.target.innerText === "Suppressed"){
+            options.target.innerText = "Inactive";
+            options.target.classList.remove('bg-success');
             options.target.classList.add('bg-secondary');
         }
     }
@@ -186,7 +193,9 @@ return (
             <Modal.Header closeButton>
                 <Modal.Title>{props.ICName + ' - '+ props.ICRating + hasSubType(props.ICSubType) + hasOptions(props.ICOptions)}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>{ICTypes[props.ICName]}<br></br><br></br>{hasSubTypeDesc(props.ICSubType)}<br></br><br></br>{hasOptionsDesc(props.ICOptions)}</Modal.Body>
+            <Modal.Body>
+                {ICTypes[props.ICName]}<br></br><br></br>{hasSubTypeDesc(props.ICSubType)}<br></br><br></br>{hasOptionsDesc(props.ICOptions)}
+                </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>Close</Button>
             </Modal.Footer>
