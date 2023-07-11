@@ -1,7 +1,5 @@
-import { useState, createRef } from "react";
 import './ConditionMonitor.css';
 const ConditionMonitor = (props) => {
-    const [Condition, setCondition] = useState(0);
     const styles = {
         rectangle: {
             width: '25px',
@@ -15,15 +13,17 @@ const ConditionMonitor = (props) => {
     }
 
     const handleClick = (options) => {
-        //options.stopPropagation();
         var wounds = options.target.dataset.number;
-        setCondition(wounds);
-        var children = options.target.parentElement.children;
-        for(var i=0; i < children.length; i++){
-            if(children[i].dataset.number <= wounds){
-                children[i].classList.add('damaged');
-            }else{
-                children[i].classList.remove('damaged');
+        if(wounds === "0" && options.target.parentElement.children[0].classList.contains('damaged') && !options.target.parentElement.children[1].classList.contains('damaged')){
+            options.target.parentElement.children[0].classList.remove('damaged');
+        }else{
+            var children = options.target.parentElement.children;
+            for(var i=0; i < children.length; i++){
+                if(children[i].dataset.number <= wounds){
+                    children[i].classList.add('damaged');
+                }else{
+                    children[i].classList.remove('damaged');
+                }
             }
         }
     }
