@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Badge from 'react-bootstrap/Badge';
 import './IC.css';
+import ConditionMonitor from './ConditionMonitor.js';
 const IC = (props) => {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -164,31 +165,42 @@ const IC = (props) => {
         }
     }
 
+    const uniqueID = 'linkedConditionMonitor'+props.conditionKey;
+
     const handleActiveToggle = (options) => {
         options.stopPropagation();
         if(options.target.innerText === "Inactive"){
             options.target.innerText = "Active";
             options.target.classList.remove('bg-secondary');
             options.target.classList.add('bg-danger');
+            document.getElementById(uniqueID).style.display = "block";
         }else if(options.target.innerText === "Active"){
             options.target.innerText = "Crashed";
             options.target.classList.remove('bg-danger');
             options.target.classList.add('bg-warning');
+            document.getElementById(uniqueID).style.display = "none";
         }else if(options.target.innerText === "Crashed"){
             options.target.innerText = "Suppressed";
             options.target.classList.remove('bg-warning');
             options.target.classList.add('bg-success');
+            document.getElementById(uniqueID).style.display = "none";
         }else if(options.target.innerText === "Suppressed"){
             options.target.innerText = "Inactive";
             options.target.classList.remove('bg-success');
             options.target.classList.add('bg-secondary');
+            document.getElementById(uniqueID).style.display = "none";
         }
     }
 
+   
 
 return (
     <div className='mb-2'>
         <Button className="ICButton" variant="primary" onClick={handleShow}>{props.ICStep}: {props.ICName + ' - '+ props.ICRating + hasSubType(props.ICSubType) + hasOptions(props.ICOptions) }<Badge onClick={handleActiveToggle} style={{"left":"5px"}} pill bg='secondary'>Inactive</Badge></Button>
+        <div id={uniqueID} style={{'display':'none'}}>
+            <ConditionMonitor key={1} />
+            <hr></hr>
+        </div>
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title>{props.ICName + ' - '+ props.ICRating + hasSubType(props.ICSubType) + hasOptions(props.ICOptions)}</Modal.Title>

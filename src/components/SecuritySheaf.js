@@ -11,7 +11,6 @@ import IC from './IC.js';
 import ServerEvent from './ServerEvent';
 import PayData from './PayData.js';
 import NastySurprise from './NastySurprise.js'
-import ConditionMonitor from './ConditionMonitor.js';
 const SecuritySheaf = (props) => {
 
     function shuffle(array) {
@@ -825,7 +824,7 @@ const SecuritySheaf = (props) => {
                     <Col className="col-md-4 col-xs-12">IC&nbsp;Init: {CombatStats[sheafCode].ICInit}</Col>
                     <Col className="col-md-4 col-xs-12">DumpShock: {CombatStats[sheafCode].DumpShock}</Col>
                 </Row>
-                {/* <Accordion defaultActiveKey="1" className='CombatStats'>
+                <Accordion defaultActiveKey="1" className='CombatStats'>
                     <Accordion.Item eventKey="0">
                         <Accordion.Header>System Copy Field</Accordion.Header>
                         <Accordion.Body>
@@ -834,7 +833,7 @@ const SecuritySheaf = (props) => {
                         </pre>
                     </Accordion.Body>
                     </Accordion.Item>
-                </Accordion> */}
+                </Accordion>
             </div>
             <div className='col-md-6 col-xs-12' >
                 <Row>
@@ -850,9 +849,7 @@ const SecuritySheaf = (props) => {
                         EventList.map((item,index) => {   
                             if(item.type === 'IC'){
                                 return (<Row> 
-                                            <IC ICStep={item.ICStep} ICName={item.ICName} ICSubType={item.ICSubType} ICExtra={item.ICExtra} ICOptions={item.ICOptions} ICRating={item.ICRating} key={index}/>
-                                            <ConditionMonitor key={'CM'+index}/>
-                                            <hr></hr>
+                                            <IC ICStep={item.ICStep} ICName={item.ICName} ICSubType={item.ICSubType} ICExtra={item.ICExtra} ICOptions={item.ICOptions} ICRating={item.ICRating} key={index} conditionKey={index}/>
                                         </Row>
                                         )
                             }else{
