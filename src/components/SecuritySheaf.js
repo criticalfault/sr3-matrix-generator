@@ -391,6 +391,7 @@ const SecuritySheaf = (props) => {
     }
 
     const GenerateSheaf = (event) => {
+        fathom.trackGoal('BW8H7HOR', 0);
         let SecuritySheafOutput = '';
         let StepModifier = 0;
         let AlertStatus = 0 // 0 = no alert, 1 = passive, 2 = active, 3 = shutdown
