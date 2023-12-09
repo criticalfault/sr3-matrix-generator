@@ -830,7 +830,7 @@ const SecuritySheaf = (props) => {
                         <Accordion.Header>System Copy Field</Accordion.Header>
                         <Accordion.Body>
                         <pre>
-                            {MasterSecuritySheafOutput}
+                            {MasterSecuritySheafOutput.replaceAll(' false','')}
                         </pre>
                     </Accordion.Body>
                     </Accordion.Item>
