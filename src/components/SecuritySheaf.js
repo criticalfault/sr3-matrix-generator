@@ -5,6 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal'; 
 import Form from 'react-bootstrap/Form';
 import Accordion from 'react-bootstrap/Accordion';
 import IC from './IC.js';
@@ -44,7 +45,53 @@ const SecuritySheaf = (props) => {
     const [SystemSurprise, setSystemSurprise] = useState([]);
     const [PayDataList, setPayDataList] = useState([]);
     const [MasterSecuritySheafOutput, setMasterSecuritySheafOutput] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const handleModalClose = () => {
+        setShowModal(false);
+    };
+
+    const handleModalOpen = () => {
+        setShowModal(true);
+    };
     
+    const handleSaveProject = (event) => {
+      let systemJSON =JSON.stringify({
+        "EventList":EventList,
+        "SystemSurprise":SystemSurprise,
+        "PayDataList":PayDataList,
+        "MasterSecuritySheafOutput":MasterSecuritySheafOutput
+      });
+      const blob = new Blob([systemJSON], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+    
+      // Create a link element and trigger the download
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'matrixProject.json';
+      link.click();
+    
+      // Clean up by revoking the object URL
+      URL.revokeObjectURL(url);
+      fathom.trackEvent('Saved 3rd Matrix Sheaf');
+    }
+    
+    const handleLoadProject = (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const fileData = e.target.result;
+            let systemData = JSON.parse(fileData);
+            setEventList(systemData.EventList);
+            setSystemSurprise(systemData.SystemSurprise);
+            setPayDataList(systemData.PayDataList);
+            setMasterSecuritySheafOutput(systemData.MasterSecuritySheafOutput);
+            fathom.trackEvent('Loaded 3rd Matrix Sheaf');
+            setShowModal(false);
+        }    
+        reader.readAsText(file);
+      }
+  
+
     const CombatStats = {
         "blue":  { "Legitimate":3, "Intruding":6, "ICDamage":"Moderate", "DumpShock":"Light",    "ICInit":"1d6+Rating", "ConstructHackingPool":0, "CascadeIncrease":"1"         },
         "green": { "Legitimate":4, "Intruding":5, "ICDamage":"Moderate", "DumpShock":"Moderate", "ICInit":"2d6+Rating", "ConstructHackingPool":1, "CascadeIncrease":"25% or 2"  },
@@ -268,6 +315,7 @@ const SecuritySheaf = (props) => {
     }
     
     const PayDataGenerate = (systemColor) => {
+        fathom.trackEvent('Generated PayData');
         let pd = "Paydata"
         let Points = 0;
         let List = [];
@@ -391,7 +439,7 @@ const SecuritySheaf = (props) => {
     }
 
     const GenerateSheaf = (event) => {
-        fathom.trackGoal('BW8H7HOR', 0);
+        fathom.trackEvent('Generated Sheaf');
         let SecuritySheafOutput = '';
         let StepModifier = 0;
         let AlertStatus = 0 // 0 = no alert, 1 = passive, 2 = active, 3 = shutdown
@@ -713,6 +761,24 @@ const SecuritySheaf = (props) => {
         </Row>
         <Row>
             <div className='col-md-6 col-xs-12' >
+                <Button style={{width: "49%",marginRight:"5px"}} onClick={handleSaveProject} >Save Project</Button>              
+                <Button style={{width: "49%"}} onClick={handleModalOpen} >Load Project</Button><br></br>
+                <Modal show={showModal} onHide={handleModalClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Upload Project</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <input type="file" accept=".json" onChange={handleLoadProject} />
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleModalClose}>
+                            Close
+                        </Button>
+                        <Button variant="primary" onClick={handleModalClose}>
+                            Upload
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
                 <Form className='align-left'>
                     <div onChange={onChangeSheafWeight}>
                         <h2>System Weight</h2>
