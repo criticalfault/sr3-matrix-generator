@@ -55,7 +55,7 @@ const SecuritySheaf = (props) => {
     };
     
     const handleSaveProject = (event) => {
-      let systemJSON =JSON.stringify({
+      let systemJSON = JSON.stringify({
         "EventList":EventList,
         "SystemSurprise":SystemSurprise,
         "PayDataList":PayDataList,
@@ -732,10 +732,12 @@ const SecuritySheaf = (props) => {
             }
             SecuritySheafOutput += "\n" + CurrentStep.toString() + ": " + Event
         }
-    
+
         // Generate paydata
-        if (PaydataCheck.current.checked === true){
+        if (PaydataCheck.current.checked){
             SecuritySheafOutput += "\n\n" + PayDataGenerate(sheafCode);
+        }else{
+            setPayDataList([]);
         }
         setEventList(EventListTemp);
         setMasterSecuritySheafOutput(SecuritySheafOutput);
@@ -857,25 +859,25 @@ const SecuritySheaf = (props) => {
                     <div>
                         <label className="form-check-label">
                             <input type="checkbox" name='NastySurprises' ref={NastySurprises} aria-label="Nasty Surprises?"/>
-                            &nbsp;Nasty Surprises? (Coming Soon!)
+                            &nbsp;Nasty Surprises? (Bouncers, Encryption, etc)
                         </label>
                     </div>
                     <div >
                         <label className="form-check-label">
                             <input type="checkbox" name='Paydata' ref={PaydataCheck} aria-label="Paydata?"/>
-                            &nbsp;Paydata?
+                            &nbsp;Generate Random Paydata?
                         </label>
                     </div>
                     <div >
                         <label className="form-check-label">
                             <input type="checkbox" name='LethalSystem' ref={LethalSystem} aria-label="Lethal System?"/>
-                             &nbsp;Lethal System?
+                             &nbsp;System Can Load Lethal IC?
                         </label>
                     </div>
                     <div c>
                         <label className="form-check-label">
                             <input type="checkbox" name='ICHaveOptions' ref={ICHaveOptions} aria-label="IC with Extra?"/>
-                            &nbsp;IC with Extra?
+                            &nbsp;IC with Extra Combat Options?
                         </label>
                     </div>
                     <Button onClick={GenerateSheaf}>Generate Host</Button>
