@@ -20,17 +20,16 @@ const SecuritySheaf = (props) => {
         // While there remain elements to shuffle.
         while (currentIndex !== 0) {
       
-          // Pick a remaining element.
-          randomIndex = Math.floor(Math.random() * currentIndex);
-          currentIndex--;
-      
-          // And swap it with the current element.
-          [array[currentIndex], array[randomIndex]] = [
-            array[randomIndex], array[currentIndex]];
+            // Pick a remaining element.
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+        
+            // And swap it with the current element.
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
         }
       
         return array;
-      }
+    }
 
     const [sheafCode, setSheafCode] = useState('blue');
     const [sheafWeight, setSheafWeight] = useState('none');
@@ -41,6 +40,9 @@ const SecuritySheaf = (props) => {
     const LethalSystem = createRef();
     const ICHaveOptions = createRef();
     const SecurityValue = createRef();
+    const [SystemName, setSystemName] = useState('Matrix System');
+    const [SystemTally, setSystemTally] = useState(0);
+    const [SystemAlertTally,setSystemAlertTally] = useState({'passive':10, 'active':20, 'shutdown':40})
     const [EventList, setEventList] = useState([]);
     const [SystemSurprise, setSystemSurprise] = useState([]);
     const [PayDataList, setPayDataList] = useState([]);
@@ -56,6 +58,7 @@ const SecuritySheaf = (props) => {
     
     const handleSaveProject = (event) => {
       let systemJSON = JSON.stringify({
+        "SystemName":SystemName,
         "EventList":EventList,
         "SystemSurprise":SystemSurprise,
         "PayDataList":PayDataList,
@@ -67,7 +70,8 @@ const SecuritySheaf = (props) => {
         "HasNastySurprises":document.querySelector('input[name="NastySurprises"]').checked,
         "HasPaydataGenerated":document.querySelector('input[name="Paydata"]').checked,
         "IsLethalSystem":document.querySelector('input[name="LethalSystem"]').checked,
-        "ICHaveOptions":document.querySelector('input[name="ICHaveOptions"]').checked
+        "ICHaveOptions":document.querySelector('input[name="ICHaveOptions"]').checked,
+        "SystemTally":SystemTally
       });
       const blob = new Blob([systemJSON], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -75,7 +79,7 @@ const SecuritySheaf = (props) => {
       // Create a link element and trigger the download
       const link = document.createElement('a');
       link.href = url;
-      link.download = 'matrixProject.json';
+      link.download = SystemName+'.json';
       link.click();
     
       // Clean up by revoking the object URL
@@ -102,6 +106,8 @@ const SecuritySheaf = (props) => {
             document.querySelector('input[name="Paydata"]').checked = systemData.HasPaydataGenerated;
             document.querySelector('input[name="LethalSystem"]').checked = systemData.IsLethalSystem;
             document.querySelector('input[name="ICHaveOptions"]').checked = systemData.ICHaveOptions;
+            setSystemName(systemData.SystemName);
+            setSystemTally(systemData.SystemTally);
             fathom.trackEvent('Loaded 3rd Matrix Sheaf');
             setShowModal(false);
         }    
@@ -464,7 +470,9 @@ const SecuritySheaf = (props) => {
         let CurrentStep = 0
         let Event = ""
         let Roll = 0
-
+        let PassiveAlertStep =0;
+        let ActiveAlertStep = 0;
+        let ShutdownAlertStep = 0;
         //ACIFS
         let AccessValue = 0;
         let ControlValue = 0;
@@ -714,6 +722,7 @@ const SecuritySheaf = (props) => {
                     Event = "Passive Alert"
                     AlertStatus = 1
                     StepsAtCurrentAlert = 0
+                    PassiveAlertStep = CurrentStep;
                 }
             }
             else if (AlertStatus === 1) { // Passive alert
@@ -728,6 +737,7 @@ const SecuritySheaf = (props) => {
                     Event = "Active Alert"
                     AlertStatus = 2
                     StepsAtCurrentAlert = 0
+                    ActiveAlertStep = CurrentStep;
                 }
             }
             else if (AlertStatus === 2) { // Active alert
@@ -745,9 +755,11 @@ const SecuritySheaf = (props) => {
                     EventListTemp.push({"type":"Alert", "ICStep":CurrentStep, "EventName":"Shutdown", "EventDescription":""});
                     Event = "Shutdown"
                     AlertStatus = 3
+                    ShutdownAlertStep = CurrentStep;
                 }
             }
-            SecuritySheafOutput += "\n" + CurrentStep.toString() + ": " + Event
+            SecuritySheafOutput += "\n" + CurrentStep.toString() + ": " + Event;
+            setSystemAlertTally({'passive':PassiveAlertStep, 'active':ActiveAlertStep, 'shutdown':ShutdownAlertStep});
         }
 
         // Generate paydata
@@ -779,7 +791,7 @@ const SecuritySheaf = (props) => {
             <h1>Shadowrun Matrix Generator</h1>
         </Row>
         <Row>
-            <div className='col-md-6 col-xs-12' >
+            <div className='col-md-6 col-xs-12' key='ProjectBase'>
                 <Button style={{width: "49%",marginRight:"5px"}} onClick={handleSaveProject} >Save Project</Button>              
                 <Button style={{width: "49%"}} onClick={handleModalOpen} >Load Project</Button><br></br>
                 <Modal show={showModal} onHide={handleModalClose}>
@@ -799,6 +811,11 @@ const SecuritySheaf = (props) => {
                     </Modal.Footer>
                 </Modal>
                 <Form className='align-left'>
+                    <div style={{"margin":"5px", "marginTop":"10px", "fontSize":"20px"}}>   
+                        <label className="form-check-label"><h2>System Name</h2>
+                            <input name='systemName' value={SystemName} onChange={(function(event){ setSystemName(event.target.value)})} />
+                        </label>
+                    </div>
                     <div onChange={onChangeSheafWeight}>
                         <h2>System Weight</h2>
                         <div className="form-check">
@@ -921,8 +938,25 @@ const SecuritySheaf = (props) => {
                     </Accordion.Item>
                 </Accordion>
             </div>
-            <div className='col-md-6 col-xs-12' >
+            <div className='col-md-6 col-xs-12' key={'RenderWindow'}>
                 <Row>
+                    <h4>Security Tally: {SystemTally}</h4>
+                    {/* <div class={"progress"} id='securityTallBar' role={"progressbar"} ariaLabel={"Security Tally Bar"} aria-valuenow={SystemTally} aria-valuemin={0} aria-valuemax={"0"}>
+                        <div class={"progress-bar bg-success"} style={{"width":"0"}}>{SystemTally}</div>
+                    </div> */}
+                    <div style={{"margin":"5px"}}>
+                        <button className='btn btn-primary' onClick={(function(event){
+                            let systemTally = SystemTally;
+                            systemTally +=1 ;
+                            setSystemTally(systemTally);
+                        })}> + </button> &nbsp; &nbsp;
+                        <button className='btn btn-primary' onClick={(function(event){
+                              let systemTally = SystemTally;
+                              systemTally -=1 ;
+                              if(systemTally < 0){ systemTally = 0; }
+                              setSystemTally(systemTally);
+                        })}> - </button>
+                    </div>
                     <h3>Step / Intrustion Counter Measure</h3>
                     <h4>{sheafDisplay + " "}</h4>
                     <hr></hr>
@@ -935,12 +969,12 @@ const SecuritySheaf = (props) => {
                         EventList.map((item,index) => {   
                             if(item.type === 'IC'){
                                 return (<Row> 
-                                            <IC ICStep={item.ICStep} ICName={item.ICName} ICSubType={item.ICSubType} ICExtra={item.ICExtra} ICOptions={item.ICOptions} ICRating={item.ICRating} key={index} conditionKey={index}/>
+                                            <IC ICStep={item.ICStep} ICName={item.ICName} ICSubType={item.ICSubType} ICExtra={item.ICExtra} ICOptions={item.ICOptions} ICRating={item.ICRating} key={index} conditionKey={index} securityTally={SystemTally}/>
                                         </Row>
                                         )
                             }else{
                                 return (<Row> 
-                                            <ServerEvent ICStep={item.ICStep} EventName={item.EventName} EventDescription={item.EventName} key={index}/>
+                                            <ServerEvent ICStep={item.ICStep} EventName={item.EventName} EventDescription={item.EventName} key={index} securityTally={SystemTally}/>
                                             <hr></hr>
                                         </Row>)
                             }
