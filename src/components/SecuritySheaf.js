@@ -59,7 +59,15 @@ const SecuritySheaf = (props) => {
         "EventList":EventList,
         "SystemSurprise":SystemSurprise,
         "PayDataList":PayDataList,
-        "MasterSecuritySheafOutput":MasterSecuritySheafOutput
+        "MasterSecuritySheafOutput":MasterSecuritySheafOutput,
+        "ACIFS":sheafDisplay,
+        "SecurityValue":SecurityValue,
+        "SystemColor":sheafCode,
+        "SystemDifficulty":sheafDifficulty,
+        "HasNastySurprises":document.querySelector('input[name="NastySurprises"]').checked,
+        "HasPaydataGenerated":document.querySelector('input[name="Paydata"]').checked,
+        "IsLethalSystem":document.querySelector('input[name="LethalSystem"]').checked,
+        "ICHaveOptions":document.querySelector('input[name="ICHaveOptions"]').checked
       });
       const blob = new Blob([systemJSON], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -85,6 +93,15 @@ const SecuritySheaf = (props) => {
             setSystemSurprise(systemData.SystemSurprise);
             setPayDataList(systemData.PayDataList);
             setMasterSecuritySheafOutput(systemData.MasterSecuritySheafOutput);
+            setSheafDifficulty(systemData.SystemDifficulty);
+            document.querySelector('input[value="'+systemData.SystemDifficulty+'"]').checked = true;
+            setSheafCode(systemData.SystemColor);
+            document.querySelector('input[value="'+systemData.SystemColor+'"]').checked = true;
+            setSheafDisplay(systemData.ACIFS);
+            document.querySelector('input[name="NastySurprises"]').checked = systemData.HasNastySurprises;
+            document.querySelector('input[name="Paydata"]').checked = systemData.HasPaydataGenerated;
+            document.querySelector('input[name="LethalSystem"]').checked = systemData.IsLethalSystem;
+            document.querySelector('input[name="ICHaveOptions"]').checked = systemData.ICHaveOptions;
             fathom.trackEvent('Loaded 3rd Matrix Sheaf');
             setShowModal(false);
         }    
@@ -847,7 +864,7 @@ const SecuritySheaf = (props) => {
                         </div>
                         <div className="form-check">
                             <label className="form-check-label">Average
-                                <input type="radio" className="form-check-input" aria-label="average" value='average'name="sheafDifficulty"/>
+                                <input type="radio" className="form-check-input" aria-label="average" value='average' name="sheafDifficulty"/>
                             </label>
                         </div>
                         <div className="form-check">
