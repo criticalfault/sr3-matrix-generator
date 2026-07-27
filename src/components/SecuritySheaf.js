@@ -84,12 +84,6 @@ const SecuritySheaf = (props) => {
     
       // Clean up by revoking the object URL
       URL.revokeObjectURL(url);
-      try{
-        fathom.trackEvent('Saved 3rd Matrix Sheaf');
-      }catch(Exception){
-        console.log('Fathom was blocked.');
-      }
-      
     }
     
     const handleLoadProject = (event) => {
@@ -114,11 +108,6 @@ const SecuritySheaf = (props) => {
             setSystemName(systemData.SystemName);
             setSystemTally(systemData.SystemTally);
             
-            try{
-                fathom.trackEvent('Loaded 3rd Matrix Sheaf');
-            }catch(Exception){
-                console.log('Fathom was blocked.');
-            }
             setShowModal(false);
         }    
         reader.readAsText(file);
@@ -349,11 +338,6 @@ const SecuritySheaf = (props) => {
     
     const PayDataGenerate = (systemColor) => {
        
-        try{
-            fathom.trackEvent('Generated PayData');
-        }catch(Exception){
-            console.log('Fathom was blocked.');
-        }
         let pd = "Paydata"
         let Points = 0;
         let List = [];
@@ -477,11 +461,6 @@ const SecuritySheaf = (props) => {
     }
 
     const GenerateSheaf = (event) => {
-        try{
-            fathom.trackEvent('Generated Sheaf');
-        }catch(Exception){
-            console.log('Fathom was blocked.');
-        }
         let SecuritySheafOutput = '';
         let StepModifier = 0;
         let AlertStatus = 0 // 0 = no alert, 1 = passive, 2 = active, 3 = shutdown
